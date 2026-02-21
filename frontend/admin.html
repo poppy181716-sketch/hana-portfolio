@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Hana Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --primary: #e8005a; --bg: #0d0d0d; --card: #181818;
+    --border: rgba(255,255,255,0.08); --text: #f0f0f0; --dim: #888;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+  /* LOGIN */
+  #loginScreen {
+    display:flex; align-items:center; justify-content:center; min-height:100vh;
+  }
+  .login-box {
+    background:var(--card); border:1px solid var(--border); border-radius:16px;
+    padding:50px 44px; width:380px; text-align:center;
+  }
+  .login-box h2 { font-size:1.6rem; margin-bottom:8px; }
+  .login-box p { color:var(--dim); margin-bottom:28px; font-size:0.9rem; }
+  .login-box input {
+    width:100%; padding:13px 16px; background:#111; border:1px solid var(--border);
+    border-radius:8px; color:var(--text); font-size:0.95rem; margin-bottom:14px; outline:none;
+  }
+  .login-box input:focus { border-color:var(--primary); }
+  .btn { padding:13px 28px; background:var(--primary); color:white; border:none;
+    border-radius:8px; font-weight:600; font-size:0.9rem; cursor:pointer; width:100%; transition:0.2s; }
+  .btn:hover { background:#c40050; }
+  #loginError { color:#ff4466; font-size:0.85rem; margin-top:10px; display:none; }
+
+  /* DASHBOARD */
+  #dashboard { display:none; }
+  header {
+    background:var(--card); border-bottom:1px solid var(--border);
+    padding:1.1rem 5%; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100;
+  }
+  header h1 { font-size:1.1rem; font-weight:700; }
+  header span { color:var(--dim); font-size:0.85rem; }
+  .logout-btn { background:transparent; border:1px solid var(--border); color:var(--dim);
+    padding:8px 18px; border-radius:6px; cursor:pointer; font-size:0.82rem; transition:0.2s; }
+  .logout-btn:hover { border-color:var(--primary); color:var(--primary); }
+
+  main { max-width:1000px; margin:0 auto; padding:40px 5%; }
+
+  /* SECTIONS */
+  .section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:32px; margin-bottom:28px; }
+  .section-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+  .section-header h2 { font-size:1.1rem; font-weight:700; display:flex; align-items:center; gap:10px; }
+  .section-header h2 i { color:var(--primary); }
+
+  /* FORM ELEMENTS */
+  label { font-size:0.82rem; color:var(--dim); display:block; margin-bottom:6px; font-weight:500; text-transform:uppercase; letter-spacing:0.8px; }
+  input[type=text], input[type=email], input[type=url], input[type=password] {
+    width:100%; padding:11px 14px; background:#111; border:1px solid var(--border);
+    border-radius:8px; color:var(--text); font-size:0.92rem; outline:none; transition:border 0.2s;
+  }
+  input:focus { border-color:var(--primary); }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .form-group { margin-bottom:16px; }
+  .save-btn {
+    padding:11px 28px; background:var(--primary); color:white; border:none;
+    border-radius:8px; font-weight:600; font-size:0.88rem; cursor:pointer; transition:0.2s; margin-top:8px;
+  }
+  .save-btn:hover { background:#c40050; }
+  .save-btn:disabled { opacity:0.5; cursor:not-allowed; }
+
+  /* UPLOAD AREA */
+  .upload-area {
+    border:2px dashed var(--border); border-radius:10px; padding:24px;
+    text-align:center; cursor:pointer; transition:0.2s; margin-bottom:14px;
+  }
+  .upload-area:hover { border-color:var(--primary); }
+  .upload-area i { font-size:2rem; color:var(--dim); margin-bottom:10px; display:block; }
+  .upload-area p { color:var(--dim); font-size:0.88rem; }
+  .upload-area input[type=file] { display:none; }
+  .preview-img {
+    width:80px; height:80px; border-radius:50%; object-fit:cover;
+    border:2px solid var(--primary); margin-bottom:12px; display:none;
+  }
+  .preview-video-name {
+    background:#111; border:1px solid var(--border); border-radius:6px;
+    padding:8px 14px; font-size:0.82rem; color:var(--dim); margin-bottom:10px; display:none;
+  }
+
+  /* VIDEO TABLE */
+  .video-table { width:100%; border-collapse:collapse; }
+  .video-table th { font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:var(--dim); padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); }
+  .video-table td { padding:12px 14px; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.88rem; vertical-align:middle; }
+  .video-table tr:last-child td { border-bottom:none; }
+  .thumb-small { width:54px; height:36px; object-fit:cover; border-radius:5px; background:#222; }
+  .thumb-small.portrait { width:27px; height:48px; }
+  .tag-pill {
+    padding:3px 10px; border-radius:20px; font-size:0.72rem; font-weight:700; text-transform:uppercase;
+    background:rgba(232,0,90,0.15); border:1px solid rgba(232,0,90,0.3); color:#e8005a;
+  }
+  .tag-pill.long { background:rgba(106,31,194,0.15); border-color:rgba(106,31,194,0.3); color:#a96de8; }
+  .action-btn {
+    padding:6px 12px; border-radius:6px; font-size:0.78rem; cursor:pointer; transition:0.2s;
+    border:1px solid var(--border); background:transparent; color:var(--dim); margin-right:4px;
+  }
+  .action-btn:hover { background:var(--primary); border-color:var(--primary); color:white; }
+  .action-btn.del:hover { background:#c40050; border-color:#c40050; }
+
+  .add-btn {
+    padding:10px 20px; background:transparent; border:1px dashed var(--border);
+    border-radius:8px; color:var(--dim); font-size:0.85rem; cursor:pointer;
+    transition:0.2s; display:flex; align-items:center; gap:8px; margin-top:14px;
+  }
+  .add-btn:hover { border-color:var(--primary); color:var(--primary); }
+
+  /* MODAL */
+  .modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999;
+    display:none; align-items:center; justify-content:center; padding:20px;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal-box {
+    background:#1a1a1a; border:1px solid var(--border); border-radius:14px;
+    padding:32px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto;
+  }
+  .modal-box h3 { font-size:1.1rem; margin-bottom:22px; }
+  .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+  .cancel-btn { padding:10px 22px; background:transparent; border:1px solid var(--border); color:var(--dim); border-radius:8px; cursor:pointer; font-size:0.88rem; }
+  .cancel-btn:hover { border-color:var(--dim); }
+  select {
+    width:100%; padding:11px 14px; background:#111; border:1px solid var(--border);
+    border-radius:8px; color:var(--text); font-size:0.92rem; outline:none;
+  }
+  select:focus { border-color:var(--primary); }
+
+  .toast {
+    position:fixed; bottom:28px; right:28px; background:#1e1e1e; border:1px solid var(--border);
+    border-radius:10px; padding:14px 22px; font-size:0.88rem; z-index:9999;
+    transform:translateY(20px); opacity:0; transition:0.3s; display:flex; align-items:center; gap:10px;
+  }
+  .toast.show { transform:translateY(0); opacity:1; }
+  .toast.success { border-color:rgba(0,200,100,0.4); }
+  .toast.error { border-color:rgba(232,0,90,0.4); }
+
+  @media(max-width:600px) { .form-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <h2>Admin Panel</h2>
+    <p>Hana Mouassa Portfolio</p>
+    <input type="password" id="passwordInput" placeholder="Enter admin password" />
+    <button class="btn" onclick="login()">Login</button>
+    <div id="loginError">Wrong password. Try again.</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <header>
+    <h1>⚙️ Portfolio Admin</h1>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span id="savedStatus"></span>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- PROFILE -->
+    <div class="section">
+      <div class="section-header">
+        <h2><i class="fas fa-user"></i> Profile</h2>
+      </div>
+      <div style="text-align:center;margin-bottom:20px">
+        <img id="profilePreview" class="preview-img" src="" alt="Profile preview">
+        <label for="profilePicFile" class="upload-area" style="max-width:340px;margin:0 auto">
+          <i class="fas fa-camera"></i>
+          <p>Click to upload profile picture</p>
+          <p style="font-size:0.75rem;margin-top:4px">JPG or PNG, max 5MB</p>
+          <input type="file" id="profilePicFile" accept="image/*" onchange="previewProfilePic(event)">
+        </label>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Display Name</label>
+          <input type="text" id="profileName" placeholder="Hana Mouassa">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="profileEmail" placeholder="hana@example.com">
+        </div>
+        <div class="form-group">
+          <label><i class="fab fa-instagram" style="color:#e1306c"></i> Instagram URL</label>
+          <input type="url" id="profileInstagram" placeholder="https://instagram.com/...">
+        </div>
+        <div class="form-group">
+          <label><i class="fab fa-x-twitter"></i> Twitter/X URL</label>
+          <input type="url" id="profileTwitter" placeholder="https://x.com/...">
+        </div>
+        <div class="form-group">
+          <label><i class="fab fa-telegram" style="color:#0088cc"></i> Telegram URL</label>
+          <input type="url" id="profileTelegram" placeholder="https://t.me/...">
+        </div>
+      </div>
+      <button class="save-btn" onclick="saveProfile()">Save Profile</button>
+    </div>
+
+    <!-- SHOWREEL -->
+    <div class="section">
+      <div class="section-header">
+        <h2><i class="fas fa-play-circle"></i> Showreel Video</h2>
+      </div>
+      <div class="form-group">
+        <div class="preview-video-name" id="showreelName"></div>
+        <label for="showreelFile" class="upload-area">
+          <i class="fas fa-video"></i>
+          <p>Click to upload showreel video</p>
+          <p style="font-size:0.75rem;margin-top:4px">MP4 recommended · Max 500MB</p>
+          <input type="file" id="showreelFile" accept="video/*" onchange="previewVideoName('showreelName', event)">
+        </label>
+      </div>
+      <button class="save-btn" onclick="saveShowreel()">Upload & Save Showreel</button>
+    </div>
+
+    <!-- SHORT FORM VIDEOS -->
+    <div class="section">
+      <div class="section-header">
+        <h2><i class="fas fa-mobile-alt"></i> Short Form Videos</h2>
+      </div>
+      <table class="video-table">
+        <thead>
+          <tr><th>Thumb</th><th>Title</th><th>Tag</th><th>Duration</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="shortVideosBody"></tbody>
+      </table>
+      <button class="add-btn" onclick="openAddModal('short')">
+        <i class="fas fa-plus"></i> Add Short Form Video
+      </button>
+    </div>
+
+    <!-- LONG FORM VIDEOS -->
+    <div class="section">
+      <div class="section-header">
+        <h2><i class="fas fa-film"></i> Long Form Videos</h2>
+      </div>
+      <table class="video-table">
+        <thead>
+          <tr><th>Thumb</th><th>Title</th><th>Tag</th><th>Duration</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="longVideosBody"></tbody>
+      </table>
+      <button class="add-btn" onclick="openAddModal('long')">
+        <i class="fas fa-plus"></i> Add Long Form Video
+      </button>
+    </div>
+
+  </main>
+</div>
+
+<!-- ADD/EDIT VIDEO MODAL -->
+<div class="modal-overlay" id="videoModal">
+  <div class="modal-box">
+    <h3 id="modalTitle">Add Video</h3>
+
+    <div class="form-group">
+      <label>Title</label>
+      <input type="text" id="vTitle" placeholder="e.g. Instagram Reel">
+    </div>
+    <div class="form-group">
+      <label>Subtitle</label>
+      <input type="text" id="vSubtitle" placeholder="e.g. Trending Audio · Hook Edit">
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Format Tag</label>
+        <input type="text" id="vTag" placeholder="Reel / TikTok / Long Form">
+      </div>
+      <div class="form-group">
+        <label>Duration Label</label>
+        <input type="text" id="vDuration" placeholder="0:30 or 18:42">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="preview-video-name" id="vVideoName"></div>
+      <label for="vVideoFile" class="upload-area">
+        <i class="fas fa-video"></i>
+        <p>Upload video file</p>
+        <input type="file" id="vVideoFile" accept="video/*" onchange="previewVideoName('vVideoName', event)">
+      </label>
+    </div>
+
+    <div class="form-group">
+      <div id="vThumbPreviewWrap" style="display:none;margin-bottom:10px">
+        <img id="vThumbPreview" style="height:60px;border-radius:6px;object-fit:cover">
+      </div>
+      <label for="vThumbFile" class="upload-area">
+        <i class="fas fa-image"></i>
+        <p>Upload thumbnail image</p>
+        <input type="file" id="vThumbFile" accept="image/*" onchange="previewThumb(event)">
+      </label>
+    </div>
+
+    <div class="modal-actions">
+      <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+      <button class="save-btn" id="modalSaveBtn" onclick="saveVideo()">Save Video</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toastMsg"></span></div>
+
+<script>
+const API = '/api';
+let token = localStorage.getItem('adminToken');
+let editingVideoId = null;
+let currentVideoType = 'short';
+
+// ===== AUTH =====
+async function login() {
+  const pw = document.getElementById('passwordInput').value;
+  const res = await fetch(`${API}/auth/login`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ password: pw })
+  });
+  const data = await res.json();
+  if (res.ok) {
+    token = data.token;
+    localStorage.setItem('adminToken', token);
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadAll();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+document.getElementById('passwordInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') login();
+});
+
+function logout() {
+  localStorage.removeItem('adminToken');
+  location.reload();
+}
+
+// ===== INIT =====
+window.onload = () => {
+  if (token) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadAll();
+  }
+};
+
+async function loadAll() {
+  await loadProfile();
+  await loadShowreel();
+  await loadVideos('short');
+  await loadVideos('long');
+}
+
+// ===== PROFILE =====
+async function loadProfile() {
+  const res = await fetch(`${API}/profile`);
+  const d = await res.json();
+  document.getElementById('profileName').value = d.name || '';
+  document.getElementById('profileEmail').value = d.email || '';
+  document.getElementById('profileInstagram').value = d.instagram_url || '';
+  document.getElementById('profileTwitter').value = d.twitter_url || '';
+  document.getElementById('profileTelegram').value = d.telegram_url || '';
+  if (d.profile_picture_url) {
+    const img = document.getElementById('profilePreview');
+    img.src = d.profile_picture_url;
+    img.style.display = 'block';
+  }
+}
+
+function previewProfilePic(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const img = document.getElementById('profilePreview');
+  img.src = URL.createObjectURL(file);
+  img.style.display = 'block';
+}
+
+async function saveProfile() {
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = 'Saving...';
+
+  let picUrl = null;
+  const picFile = document.getElementById('profilePicFile').files[0];
+  if (picFile) picUrl = await uploadFile('profile-pictures', picFile);
+
+  const body = {
+    name: document.getElementById('profileName').value,
+    email: document.getElementById('profileEmail').value,
+    instagram_url: document.getElementById('profileInstagram').value,
+    twitter_url: document.getElementById('profileTwitter').value,
+    telegram_url: document.getElementById('profileTelegram').value,
+  };
+  if (picUrl) body.profile_picture_url = picUrl;
+
+  const res = await fetch(`${API}/profile`, {
+    method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body: JSON.stringify(body)
+  });
+  btn.disabled = false; btn.textContent = 'Save Profile';
+  res.ok ? showToast('Profile saved!', 'success') : showToast('Error saving profile', 'error');
+}
+
+// ===== SHOWREEL =====
+async function loadShowreel() {
+  const res = await fetch(`${API}/showreel`);
+  const d = await res.json();
+  if (d.video_url) {
+    const el = document.getElementById('showreelName');
+    el.textContent = '✅ Current: ' + d.video_url.split('/').pop();
+    el.style.display = 'block';
+  }
+}
+
+function previewVideoName(elId, e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const el = document.getElementById(elId);
+  el.textContent = '📹 ' + file.name;
+  el.style.display = 'block';
+}
+
+async function saveShowreel() {
+  const btn = event.target;
+  const file = document.getElementById('showreelFile').files[0];
+  if (!file) return showToast('Please select a video file', 'error');
+  btn.disabled = true; btn.textContent = 'Uploading... (this may take a moment)';
+
+  const url = await uploadFile('videos', file);
+  if (!url) { btn.disabled = false; btn.textContent = 'Upload & Save Showreel'; return; }
+
+  const res = await fetch(`${API}/showreel`, {
+    method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body: JSON.stringify({ video_url: url })
+  });
+  btn.disabled = false; btn.textContent = 'Upload & Save Showreel';
+  res.ok ? showToast('Showreel updated!', 'success') : showToast('Error saving', 'error');
+  loadShowreel();
+}
+
+// ===== VIDEOS =====
+async function loadVideos(type) {
+  const res = await fetch(`${API}/videos?type=${type}`);
+  const videos = await res.json();
+  const tbody = document.getElementById(type + 'VideosBody');
+  tbody.innerHTML = '';
+  videos.forEach(v => {
+    const tr = document.createElement('tr');
+    const isPortrait = type === 'short';
+    tr.innerHTML = `
+      <td>${v.thumbnail_url ? `<img class="thumb-small${isPortrait?' portrait':''}" src="${v.thumbnail_url}">` : '—'}</td>
+      <td><strong>${v.title}</strong>${v.subtitle ? `<br><span style="color:#666;font-size:0.78rem">${v.subtitle}</span>` : ''}</td>
+      <td><span class="tag-pill${type==='long'?' long':''}">${v.format_tag||''}</span></td>
+      <td style="color:#888">${v.duration_label||''}</td>
+      <td>
+        <button class="action-btn" onclick='openEditModal(${JSON.stringify(v)})'><i class="fas fa-pen"></i></button>
+        <button class="action-btn del" onclick="deleteVideo(${v.id}, '${type}')"><i class="fas fa-trash"></i></button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function openAddModal(type) {
+  currentVideoType = type;
+  editingVideoId = null;
+  document.getElementById('modalTitle').textContent = `Add ${type === 'short' ? 'Short Form' : 'Long Form'} Video`;
+  ['vTitle','vSubtitle','vTag','vDuration'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('vVideoName').style.display = 'none';
+  document.getElementById('vThumbPreviewWrap').style.display = 'none';
+  document.getElementById('vVideoFile').value = '';
+  document.getElementById('vThumbFile').value = '';
+  document.getElementById('videoModal').classList.add('open');
+}
+
+function openEditModal(v) {
+  currentVideoType = v.type;
+  editingVideoId = v.id;
+  document.getElementById('modalTitle').textContent = 'Edit Video';
+  document.getElementById('vTitle').value = v.title || '';
+  document.getElementById('vSubtitle').value = v.subtitle || '';
+  document.getElementById('vTag').value = v.format_tag || '';
+  document.getElementById('vDuration').value = v.duration_label || '';
+  if (v.video_url) { const el = document.getElementById('vVideoName'); el.textContent='📹 '+v.video_url.split('/').pop(); el.style.display='block'; }
+  if (v.thumbnail_url) { document.getElementById('vThumbPreview').src=v.thumbnail_url; document.getElementById('vThumbPreviewWrap').style.display='block'; }
+  document.getElementById('videoModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('videoModal').classList.remove('open'); }
+
+function previewThumb(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('vThumbPreview').src = URL.createObjectURL(file);
+  document.getElementById('vThumbPreviewWrap').style.display = 'block';
+}
+
+async function saveVideo() {
+  const btn = document.getElementById('modalSaveBtn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+
+  let videoUrl = null, thumbUrl = null;
+  const videoFile = document.getElementById('vVideoFile').files[0];
+  const thumbFile = document.getElementById('vThumbFile').files[0];
+  if (videoFile) videoUrl = await uploadFile('videos', videoFile);
+  if (thumbFile) thumbUrl = await uploadFile('thumbnails', thumbFile);
+
+  const body = {
+    type: currentVideoType,
+    title: document.getElementById('vTitle').value,
+    subtitle: document.getElementById('vSubtitle').value,
+    format_tag: document.getElementById('vTag').value,
+    duration_label: document.getElementById('vDuration').value,
+    is_portrait: currentVideoType === 'short',
+  };
+  if (videoUrl) body.video_url = videoUrl;
+  if (thumbUrl) body.thumbnail_url = thumbUrl;
+
+  const url = editingVideoId ? `${API}/videos/${editingVideoId}` : `${API}/videos`;
+  const method = editingVideoId ? 'PUT' : 'POST';
+
+  const res = await fetch(url, {
+    method, headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body: JSON.stringify(body)
+  });
+  btn.disabled = false; btn.textContent = 'Save Video';
+
+  if (res.ok) {
+    closeModal();
+    loadVideos(currentVideoType);
+    showToast('Video saved!', 'success');
+  } else {
+    showToast('Error saving video', 'error');
+  }
+}
+
+async function deleteVideo(id, type) {
+  if (!confirm('Delete this video?')) return;
+  await fetch(`${API}/videos/${id}`, {
+    method:'DELETE', headers:{'Authorization':'Bearer '+token}
+  });
+  loadVideos(type);
+  showToast('Deleted!', 'success');
+}
+
+// ===== UPLOAD FILE =====
+async function uploadFile(bucket, file) {
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetch(`${API}/upload/${bucket}`, {
+    method:'POST', headers:{'Authorization':'Bearer '+token},
+    body: form
+  });
+  const d = await res.json();
+  if (!res.ok) { showToast('Upload failed: ' + (d.error?.message || 'unknown error'), 'error'); return null; }
+  return d.url;
+}
+
+// ===== TOAST =====
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
