@@ -1132,10 +1132,12 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     </script>
     <script>
 // ===== LOAD DYNAMIC DATA FROM API =====
+const API_URL = 'https://hana-portfolio-backend-ife6.onrender.com';
+
 async function loadSiteData() {
   try {
     // Load profile
-    const profile = await fetch('/api/profile').then(r => r.json());
+    const profile = await fetch(API_URL + '/api/profile').then(r => r.json());
     console.log('Profile loaded:', profile);
     
     if (profile.profile_picture_url) {
@@ -1169,7 +1171,7 @@ if (profile.email) {
 }
 
     // Load showreel
-    const showreel = await fetch('/api/showreel').then(r => r.json());
+    const showreel = await fetch(API_URL + '/api/showreel').then(r => r.json());
     console.log('Showreel loaded:', showreel);
     
     if (showreel.video_url) {
