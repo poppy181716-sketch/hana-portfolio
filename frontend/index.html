@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,49 +12,72 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
-        #home > * {
-    position: relative;
-    z-index: 1;
-}
-        #home {
-    position: relative;
-    overflow: hidden;
-}
-@keyframes floatGlow {
-    0% { transform: translate(-50%, -50%) scale(1); }
-    50% { transform: translate(-48%, -52%) scale(1.05); }
-    100% { transform: translate(-50%, -50%) scale(1); }
-}
-
-#home::before {
-    content: "";
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 700px;
-    height: 700px;
-    background: radial-gradient(circle, rgba(232,0,90,0.25), transparent 70%);
-    filter: blur(150px);
-    z-index: 0;
-    animation: floatGlow 6s ease-in-out infinite;
-}
-
-        :root {
-            --primary: #e8005a;
-            --secondary: #6a1fc2;
-            --accent: #00b8d9;
-            --bg-dark: #0d0d0d;
-            --bg-darker: #080808;
-            --card-bg: #181818;
-            --card-hover: #202020;
-            --text-main: #f0f0f0;
-            --text-dim: #999;
-            --text-dimmer: #5a5a5a;
-            --border-subtle: rgba(255, 255, 255, 0.07);
-            --glass-bg: rgba(18, 18, 18, 0.85);
+        /* =============================================
+           DARK THEME (default) — refined & vivid
+        ============================================= */
+        :root,
+        [data-theme="dark"] {
+            --primary: #2563eb;
+            --primary-dim: rgba(37,99,235,0.16);
+            --primary-glow: rgba(37,99,235,0.40);
+            --secondary: #0ea5e9;
+            --accent: #38bdf8;
+            --bg-dark: #0a0a0f;
+            --bg-darker: #050508;
+            --card-bg: #12121a;
+            --card-hover: #1a1a26;
+            --text-main: #f0eff8;
+            --text-dim: #8b8aa0;
+            --text-dimmer: #4a4860;
+            --border-subtle: rgba(255,255,255,0.07);
+            --glass-bg: rgba(10,10,15,0.88);
+            --shadow-card: 0 4px 24px rgba(0,0,0,0.4);
+            --shadow-hover: 0 16px 48px rgba(37,99,235,0.28);
+            --indicator-bg: rgba(255,255,255,0.12);
+            --glow-hero: rgba(37,99,235,0.22);
+            --animatedbg-color: #0a0a0f;
+            --nav-shadow: 0 1px 0 rgba(255,255,255,0.04);
+            --stat-number-color: #f0eff8;
+            --close-modal-bg: rgba(255,255,255,0.1);
+            --duration-bg: rgba(0,0,0,0.65);
+            --duration-color: #fff;
+            --duration-border: rgba(255,255,255,0.08);
         }
 
+        /* =============================================
+           LIGHT THEME — clean & crisp
+        ============================================= */
+        [data-theme="light"] {
+            --primary: #1d4ed8;
+            --primary-dim: rgba(29,78,216,0.09);
+            --primary-glow: rgba(29,78,216,0.25);
+            --secondary: #0284c7;
+            --accent: #0ea5e9;
+            --bg-dark: #f2f2f7;
+            --bg-darker: #e5e5ec;
+            --card-bg: #ffffff;
+            --card-hover: #f7f7fc;
+            --text-main: #0d0d18;
+            --text-dim: #50505f;
+            --text-dimmer: #94949f;
+            --border-subtle: rgba(0,0,0,0.08);
+            --glass-bg: rgba(242,242,247,0.92);
+            --shadow-card: 0 2px 16px rgba(0,0,0,0.07);
+            --shadow-hover: 0 12px 36px rgba(29,78,216,0.18);
+            --indicator-bg: rgba(0,0,0,0.12);
+            --glow-hero: rgba(29,78,216,0.12);
+            --animatedbg-color: #f2f2f7;
+            --nav-shadow: 0 1px 0 rgba(0,0,0,0.06), 0 4px 20px rgba(0,0,0,0.05);
+            --stat-number-color: #0d0d18;
+            --close-modal-bg: rgba(0,0,0,0.12);
+            --duration-bg: rgba(255,255,255,0.88);
+            --duration-color: #111;
+            --duration-border: rgba(0,0,0,0.1);
+        }
+
+        /* =============================================
+           BASE
+        ============================================= */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
@@ -64,28 +87,133 @@
             overflow-x: hidden;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            transition: background 0.45s ease, color 0.45s ease;
         }
 
         html { scroll-behavior: smooth; }
 
-        #animatedBg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background:
-                radial-gradient(ellipse at 20% 10%, rgba(106, 31, 194, 0.06) 0%, transparent 55%),
-                radial-gradient(ellipse at 80% 90%, rgba(232, 0, 90, 0.06) 0%, transparent 55%),
-                #0d0d0d;
+        /* =============================================
+           THEME TOGGLE BUTTON
+        ============================================= */
+        #themeToggle {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 9000;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.25), 0 0 0 1px var(--border-subtle);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
         }
 
+        #themeToggle:hover {
+            transform: scale(1.12) rotate(15deg);
+            box-shadow: 0 8px 32px var(--primary-glow), 0 0 0 1px var(--primary);
+        }
+
+        #themeToggle:active { transform: scale(0.95); }
+
+        .toggle-icon-wrap {
+            position: relative;
+            width: 24px;
+            height: 24px;
+        }
+
+        .toggle-icon-wrap i {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .icon-sun {
+            color: #f59e0b;
+            opacity: 0;
+            transform: rotate(-90deg) scale(0.5);
+        }
+
+        .icon-moon {
+            color: #60a5fa;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        [data-theme="light"] .icon-sun {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        [data-theme="light"] .icon-moon {
+            opacity: 0;
+            transform: rotate(90deg) scale(0.5);
+        }
+
+        /* Ripple ring on toggle */
+        #themeToggle::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.4s ease;
+        }
+
+        #themeToggle:hover::after {
+            opacity: 0.5;
+            transform: scale(1.15);
+        }
+
+        /* =============================================
+           ANIMATED BG
+        ============================================= */
+        #animatedBg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            transition: background 0.5s ease;
+        }
+
+        [data-theme="dark"] #animatedBg {
+            background:
+                radial-gradient(ellipse at 20% 10%, rgba(14,165,233,0.08) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 90%, rgba(37,99,235,0.09) 0%, transparent 55%),
+                #0a0a0f;
+        }
+
+        [data-theme="light"] #animatedBg {
+            background:
+                radial-gradient(ellipse at 20% 10%, rgba(2,132,199,0.04) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 90%, rgba(29,78,216,0.05) 0%, transparent 55%),
+                #f2f2f7;
+        }
+
+        /* =============================================
+           NAV
+        ============================================= */
         nav {
             position: fixed; top: 0; width: 100%;
             background: var(--glass-bg);
-            backdrop-filter: blur(16px) saturate(140%);
-            -webkit-backdrop-filter: blur(16px) saturate(140%);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
             padding: 1.2rem 5%;
             display: flex; justify-content: space-between; align-items: center;
             z-index: 1000; border-bottom: 1px solid var(--border-subtle);
             transform: translateY(-100%);
-            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+                        background 0.45s ease,
+                        box-shadow 0.45s ease;
+            box-shadow: var(--nav-shadow);
         }
 
         nav.visible { transform: translateY(0); }
@@ -94,13 +222,13 @@
 
         .nav-profile img {
             width: 42px; height: 42px; border-radius: 50%;
-            border: 2px solid rgba(232, 0, 90, 0.4);
-            object-fit: cover; transition: transform 0.3s ease;
+            border: 2px solid var(--primary-glow);
+            object-fit: cover; transition: transform 0.3s ease, border-color 0.45s ease;
         }
 
         .nav-profile img:hover { transform: scale(1.08); }
-        .nav-profile span { font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px; }
-        .nav-links { display: flex; gap: 3rem; list-style: none; }
+        .nav-profile span { font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px; color: var(--text-main); transition: color 0.45s ease; }
+        .nav-links { display: flex; gap: 3rem; list-style: none; align-items: center; }
 
         .nav-links a {
             color: var(--text-dim); text-decoration: none; font-weight: 500;
@@ -123,37 +251,55 @@
         .menu-toggle.active span:nth-child(2) { opacity: 0; }
         .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -6px); }
 
-        #home {
-            min-height: 100vh; display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            text-align: center; padding: 2rem; position: relative;
+        /* =============================================
+           HERO
+        ============================================= */
+        #home > * { position: relative; z-index: 1; }
+        #home { position: relative; overflow: hidden; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; }
+
+        @keyframes floatGlow {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-48%, -52%) scale(1.06); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        #home::before {
+            content: "";
+            position: absolute; top: 40%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px; height: 800px;
+            background: radial-gradient(circle, var(--glow-hero), transparent 70%);
+            filter: blur(160px); z-index: 0;
+            animation: floatGlow 7s ease-in-out infinite;
+            transition: background 0.5s ease;
         }
 
         .showreel-container {
             width: 100%; max-width: 860px; margin-bottom: 3rem;
             border-radius: 16px; overflow: hidden;
             border: 1px solid var(--border-subtle);
-            background: #000;
+            background: var(--card-bg);
             opacity: 0; transform: translateY(24px);
-            transition: all 0.9s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: opacity 0.9s cubic-bezier(0.165,0.84,0.44,1),
+                        transform 0.9s cubic-bezier(0.165,0.84,0.44,1),
+                        box-shadow 0.35s ease,
+                        background 0.45s ease;
             position: relative;
         }
-        .showreel-container:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 30px 80px rgba(232,0,90,0.45);
-        }
+        .showreel-container:hover { transform: translateY(-10px); box-shadow: var(--shadow-hover); }
         .showreel-container.animate { opacity: 1; transform: translateY(0); }
 
-        .showreel-wrapper { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
-        .showreel-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .showreel-wrapper { position: relative; padding-bottom: 56.25%; height: 0; background: var(--card-bg); display:flex; align-items:center; justify-content:center; color: var(--text-dim); }
 
         .showreel-label {
             position: absolute; top: 16px; left: 16px;
-            background: rgba(232, 0, 90, 0.85); backdrop-filter: blur(8px);
+            background: rgba(37,99,235,0.92); backdrop-filter: blur(8px);
             padding: 6px 16px; border-radius: 50px; font-size: 0.72rem;
             font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
-            z-index: 10; display: flex; align-items: center; gap: 7px;
+            z-index: 10; display: flex; align-items: center; gap: 7px; color: #fff;
         }
+
+        [data-theme="light"] .showreel-label { background: rgba(29,78,216,0.90); }
 
         .showreel-label i { font-size: 0.85rem; }
 
@@ -165,14 +311,23 @@
             transition: all 0.9s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
-        .hero-profile img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--bg-dark); }
+        .hero-profile img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--bg-dark); transition: border-color 0.45s ease; }
 
         .hero-content h1 {
             font-size: clamp(2.4rem, 7vw, 4.5rem); font-weight: 900;
-            background: linear-gradient(135deg, #fff 0%, #ccc 100%);
+            line-height: 1.1; margin-bottom: 0.5rem;
+            opacity: 0; transform: translateY(24px);
+            transition: all 0.9s cubic-bezier(0.165, 0.84, 0.44, 1) 0.2s;
+        }
+
+        [data-theme="dark"] .hero-content h1 {
+            background: linear-gradient(135deg, #ffffff 0%, #93c5fd 100%);
             -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem; opacity: 0; transform: translateY(24px);
-            transition: all 0.9s cubic-bezier(0.165, 0.84, 0.44, 1) 0.2s; line-height: 1.1;
+        }
+
+        [data-theme="light"] .hero-content h1 {
+            background: linear-gradient(135deg, #0d1530 0%, #1e3a6e 100%);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
         }
 
         .hero-content h2 {
@@ -199,51 +354,38 @@
         }
 
         .btn-primary, .btn-secondary {
-            padding: 13px 32px; border-radius: 8px; text-decoration: none;
+            padding: 13px 32px; border-radius: 30px; text-decoration: none;
             font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px;
-            font-size: 0.82rem; transition: all 0.25s ease;
+            font-size: 0.82rem; transition: all 0.28s ease;
             display: inline-flex; align-items: center; gap: 10px;
         }
 
         .btn-primary {
-            background: var(--primary);
-            color: white;
-            padding: 12px 28px;
-            border-radius: 30px;
-            font-weight: 600;
-            transition: 0.3s ease;
+            background: var(--primary); color: white;
+            padding: 12px 30px;
+            box-shadow: 0 4px 20px var(--primary-glow);
         }
 
-        .btn-primary:hover { background: #c40050; transform: translateY(-3px); }
+        .btn-primary:hover { filter: brightness(1.1); transform: translateY(-3px); box-shadow: 0 10px 30px var(--primary-glow); }
 
         .btn-secondary {
             background: transparent; color: var(--text-main);
             border: 1px solid var(--border-subtle);
         }
 
-        .btn-secondary:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); transform: translateY(-2px); }
+        [data-theme="dark"] .btn-secondary { border-color: rgba(255,255,255,0.14); }
+        [data-theme="light"] .btn-secondary { border-color: rgba(0,0,0,0.14); }
+
+        .btn-secondary:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); }
 
         .social-icons { display: flex; gap: 1.8rem; justify-content: center; opacity: 0; transition: all 0.9s cubic-bezier(0.165, 0.84, 0.44, 1) 0.65s; }
+        .social-icons a { font-size: 2.7rem; transition: transform 0.3s ease; }
+        .social-icons a:hover i { transform: translateY(-4px) scale(1.2); filter: drop-shadow(0 0 10px var(--primary-glow)); }
 
-        .social-icons a {
-            font-size: 2.7rem;
-            transition: transform 0.3s ease, filter 0.3s ease;
-        }
-
-        .social-icons i {
-            transition: transform 0.3s ease, filter 0.3s ease;
-        }
-
-        .social-icons a:hover i {
-            transform: translateY(-4px) scale(1.2);
-            filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));
-        }
-
-        /* === PORTFOLIO SECTION === */
-        #mywork {
-            padding: 120px 0 160px;
-            position: relative;
-        }
+        /* =============================================
+           PORTFOLIO SECTION
+        ============================================= */
+        #mywork { padding: 120px 0 160px; position: relative; }
 
         .section-title {
             text-align: center; font-size: clamp(1.8rem, 4vw, 2.6rem);
@@ -252,386 +394,257 @@
             color: var(--text-main);
         }
 
-        .section-subtitle {
-            text-align: center; color: var(--text-dimmer); font-size: 1rem;
-            margin-bottom: 3rem; max-width: 500px; margin-left: auto; margin-right: auto;
-        }
-
+        .section-subtitle { text-align: center; color: var(--text-dimmer); font-size: 1rem; margin-bottom: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; }
         .section-title.animate { opacity: 1; transform: translateY(0); }
 
-        /* --- FORMAT TABS --- */
         .format-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 0;
-            margin: 0 auto 50px;
-            width: fit-content;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            padding: 5px;
-            position: relative;
-            z-index: 5;
+            display: flex; justify-content: center; gap: 0; margin: 0 auto 50px; width: fit-content;
+            background: var(--primary-dim); border: 1px solid var(--border-subtle);
+            border-radius: 8px; padding: 5px; position: relative; z-index: 5;
+            transition: background 0.45s ease;
         }
 
         .format-tab {
-            padding: 12px 36px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            color: var(--text-dimmer);
-            transition: all 0.3s ease;
-            border: none;
-            background: transparent;
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            white-space: nowrap;
+            padding: 12px 36px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 2px; cursor: pointer; color: var(--text-dimmer);
+            transition: all 0.3s ease; border: none; background: transparent;
+            display: flex; align-items: center; gap: 9px; white-space: nowrap;
         }
 
         .format-tab i { font-size: 0.95rem; }
+        .format-tab.active { background: var(--primary); color: white; }
+        .format-tab:not(.active):hover { color: var(--text-dim); background: var(--primary-dim); }
 
-        .format-tab.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .format-tab:not(.active):hover {
-            color: var(--text-dim);
-            background: rgba(255,255,255,0.04);
-        }
-
-        .format-descriptor {
-            text-align: center;
-            margin-bottom: 40px;
-            min-height: 54px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
+        .format-descriptor { text-align: center; margin-bottom: 40px; min-height: 54px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 
         .descriptor-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            padding: 7px 18px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            opacity: 0;
-            transform: translateY(8px);
-            transition: all 0.35s ease;
+            display: inline-flex; align-items: center; gap: 9px; padding: 7px 18px;
+            border-radius: 6px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1.5px; opacity: 0; transform: translateY(8px); transition: all 0.35s ease;
         }
 
         .descriptor-badge.visible { opacity: 1; transform: translateY(0); }
 
-        .badge-longform {
-            background: rgba(106, 31, 194, 0.15);
-            border: 1px solid rgba(106, 31, 194, 0.3);
-            color: #a96de8;
-        }
+        .badge-longform { background: rgba(14,165,233,0.1); border: 1px solid rgba(14,165,233,0.28); color: #38bdf8; }
+        [data-theme="light"] .badge-longform { background: rgba(2,132,199,0.08); border-color: rgba(2,132,199,0.22); color: #0284c7; }
 
-        .badge-shortform {
-            background: rgba(232, 0, 90, 0.1);
-            border: 1px solid rgba(232, 0, 90, 0.3);
-            color: #e8005a;
-        }
+        .badge-shortform { background: var(--primary-dim); border: 1px solid var(--primary-glow); color: var(--primary); }
 
-        .descriptor-text {
-            color: var(--text-dimmer);
-            font-size: 0.85rem;
-            opacity: 0;
-            transition: opacity 0.35s ease 0.1s;
-        }
-
+        .descriptor-text { color: var(--text-dimmer); font-size: 0.85rem; opacity: 0; transition: opacity 0.35s ease 0.1s; }
         .descriptor-text.visible { opacity: 1; }
 
-        .carousel-panel {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-        }
-
+        .carousel-panel { display: none; flex-direction: column; align-items: center; }
         .carousel-panel.active { display: flex; }
 
-        .flat-carousel-container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            padding: 0 80px;
-        }
-
-        .flat-carousel-track-wrap {
-            overflow: hidden;
-            border-radius: 12px;
-        }
-
-        .flat-carousel-track {
-            display: flex;
-            gap: 20px;
-            transition: transform 0.55s cubic-bezier(0.165, 0.84, 0.44, 1);
-            will-change: transform;
-        }
+        .flat-carousel-container { width: 100%; max-width: 1200px; margin: 0 auto; position: relative; padding: 0 80px; }
+        .flat-carousel-track-wrap { overflow: hidden; border-radius: 12px; }
+        .flat-carousel-track { display: flex; gap: 20px; transition: transform 0.55s cubic-bezier(0.165, 0.84, 0.44, 1); will-change: transform; }
 
         .video-card {
-            flex: 0 0 400px;
-            height: 250px;
-            background: var(--card-bg);
-            border-radius: 12px;
-            cursor: pointer;
-            overflow: hidden;
-            border: 1px solid var(--border-subtle);
-            position: relative;
-            background-size: cover;
-            background-position: center;
-            transition: border-color 0.3s ease, transform 0.3s ease;
+            flex: 0 0 400px; height: 250px; background: var(--card-bg); border-radius: 12px;
+            cursor: pointer; overflow: hidden; border: 1px solid var(--border-subtle); position: relative;
+            background-size: cover; background-position: center;
+            transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: var(--shadow-card);
         }
 
-        .video-card:hover {
-            border-color: rgba(232, 0, 90, 0.35);
-            transform: translateY(-4px);
-        }
-
-        .video-card.short-form-card {
-            flex: 0 0 220px;
-            height: 390px;
-        }
+        .video-card:hover { border-color: var(--primary-glow); transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+        .video-card.short-form-card { flex: 0 0 220px; height: 390px; }
 
         .card-overlay {
             position: absolute; inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 55%, transparent 100%);
+            background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.18) 55%, transparent 100%);
             display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;
             opacity: 0; transition: opacity 0.35s ease;
         }
 
         .video-card:hover .card-overlay { opacity: 1; }
-
-        .card-overlay h3 { font-size: 1.15rem; margin-bottom: 4px; font-weight: 700; }
-        .card-overlay p { color: var(--text-dim); font-size: 0.85rem; }
-
+        .card-overlay h3 { font-size: 1.15rem; margin-bottom: 4px; font-weight: 700; color: #fff; }
+        .card-overlay p { color: rgba(255,255,255,0.72); font-size: 0.85rem; }
         .short-form-card .card-overlay h3 { font-size: 1rem; }
         .short-form-card .card-overlay p { font-size: 0.78rem; }
-
-        .video-card.short-form-card .card-overlay {
-            opacity: 0.85;
-            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%);
-        }
-
+        .video-card.short-form-card .card-overlay { opacity: 0.85; background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, transparent 55%); }
         .video-card.short-form-card:hover .card-overlay { opacity: 1; }
 
         .card-duration {
-            position: absolute;
-            top: 14px; right: 14px;
-            background: rgba(0,0,0,0.65);
-            backdrop-filter: blur(6px);
-            padding: 3px 10px;
-            border-radius: 4px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            z-index: 3;
-            border: 1px solid rgba(255,255,255,0.08);
+            position: absolute; top: 14px; right: 14px;
+            background: var(--duration-bg); backdrop-filter: blur(6px);
+            padding: 3px 10px; border-radius: 4px; font-size: 0.72rem; font-weight: 700;
+            z-index: 3; border: 1px solid var(--duration-border); color: var(--duration-color);
+            transition: background 0.45s ease, color 0.45s ease;
         }
 
         .card-format-tag {
-            position: absolute;
-            top: 14px; left: 14px;
-            padding: 3px 10px;
-            border-radius: 4px;
-            font-size: 0.68rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            z-index: 3;
+            position: absolute; top: 14px; left: 14px; padding: 3px 10px; border-radius: 4px;
+            font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            z-index: 3; color: #fff;
         }
 
-        .tag-longform {
-            background: rgba(106, 31, 194, 0.8);
-            border: 1px solid rgba(106, 31, 194, 0.5);
-        }
-
-        .tag-shortform {
-            background: rgba(232, 0, 90, 0.8);
-            border: 1px solid rgba(232, 0, 90, 0.5);
-        }
+        .tag-longform { background: rgba(14,165,233,0.88); border: 1px solid rgba(14,165,233,0.5); }
+        [data-theme="light"] .tag-longform { background: rgba(2,132,199,0.88); }
+        .tag-shortform { background: rgba(37,99,235,0.88); border: 1px solid rgba(37,99,235,0.5); }
+        [data-theme="light"] .tag-shortform { background: rgba(29,78,216,0.88); }
 
         .video-card .play-icon {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             font-size: 3rem; color: white; opacity: 0;
             transition: all 0.35s ease; z-index: 2;
+            filter: drop-shadow(0 2px 12px rgba(0,0,0,0.6));
         }
 
-        .video-card:hover .play-icon { opacity: 0.9; transform: translate(-50%, -50%) scale(1.1); }
+        .video-card:hover .play-icon { opacity: 0.92; transform: translate(-50%, -50%) scale(1.12); }
 
-        .carousel-nav-flat {
-            display: flex;
-            justify-content: center;
-            gap: 14px;
-            margin-top: 30px;
-        }
+        .carousel-nav-flat { display: flex; justify-content: center; gap: 14px; margin-top: 30px; }
 
         .carousel-btn {
-            width: 48px; height: 48px; border-radius: 8px;
-            background: var(--card-bg);
+            width: 48px; height: 48px; border-radius: 10px; background: var(--card-bg);
             border: 1px solid var(--border-subtle); color: var(--text-dim);
             font-size: 1.1rem; cursor: pointer; transition: all 0.25s ease;
             display: flex; align-items: center; justify-content: center;
+            box-shadow: var(--shadow-card);
         }
 
-        .carousel-btn:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
-        }
+        .carousel-btn:hover { background: var(--primary); border-color: var(--primary); color: white; transform: translateY(-2px); }
+        .carousel-btn:disabled { opacity: 0.25; cursor: default; pointer-events: none; }
 
-        .carousel-btn:disabled {
-            opacity: 0.3;
-            cursor: default;
-            pointer-events: none;
-        }
+        .carousel-indicators { display: flex; gap: 8px; align-items: center; margin-left: 20px; }
+        .indicator { width: 8px; height: 8px; border-radius: 50%; background: var(--indicator-bg); cursor: pointer; transition: all 0.3s ease; }
+        .indicator.active { background: var(--primary); width: 28px; border-radius: 4px; }
 
-        .carousel-indicators {
-            display: flex; gap: 8px; align-items: center; margin-left: 20px;
-        }
-
-        .indicator {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: var(--border-subtle); cursor: pointer; transition: all 0.3s ease;
-        }
-
-        .indicator.active {
-            background: var(--primary);
-            width: 28px; border-radius: 4px;
-        }
-
+        /* =============================================
+           STATS
+        ============================================= */
         #stats { padding: 80px 5%; border-top: 1px solid var(--border-subtle); }
 
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 40px; max-width: 1100px; margin: 0 auto;
-        }
-
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 40px; max-width: 1100px; margin: 0 auto; }
         .stat-card { text-align: center; padding: 1.5rem; }
-
-        .stat-number {
-            font-size: 3.2rem; font-weight: 900;
-            color: var(--text-main);
-            line-height: 1; margin-bottom: 10px;
-        }
-
+        .stat-number { font-size: 3.2rem; font-weight: 900; color: var(--stat-number-color); line-height: 1; margin-bottom: 10px; transition: color 0.45s ease; }
         .stat-label { color: var(--text-dimmer); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; }
 
+        /* =============================================
+           TOOLS
+        ============================================= */
         #tools { padding: 100px 5%; }
 
-        .tools-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px; max-width: 1100px; margin: 0 auto;
-        }
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; max-width: 1100px; margin: 0 auto; }
 
         .tool-card {
-            background: var(--card-bg); padding: 3rem 2rem;
-            border-radius: 12px; text-align: center;
-            border: 1px solid var(--border-subtle);
-            transition: all 0.4s ease;
+            background: var(--card-bg); padding: 3rem 2rem; border-radius: 14px; text-align: center;
+            border: 1px solid var(--border-subtle); transition: all 0.4s ease;
             opacity: 0; transform: translateY(24px); position: relative; overflow: hidden;
+            box-shadow: var(--shadow-card);
         }
 
+        .tool-card::before {
+            content: '';
+            position: absolute; inset: 0; border-radius: 14px;
+            background: linear-gradient(135deg, var(--primary-dim) 0%, transparent 60%);
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+
+        .tool-card:hover::before { opacity: 1; }
         .tool-card.animate { opacity: 1; transform: translateY(0); }
+        .tool-card:hover { background: var(--card-hover); border-color: var(--primary-glow); transform: translateY(-6px); box-shadow: var(--shadow-hover); }
+        .tool-card i { font-size: 2.5rem; color: var(--primary); margin-bottom: 18px; display: inline-block; transition: transform 0.3s ease; position: relative; }
+        .tool-card:hover i { transform: scale(1.12) rotate(-5deg); }
+        .tool-card h3 { font-size: 1.1rem; margin-bottom: 8px; font-weight: 700; color: var(--text-main); position: relative; }
+        .tool-card p { color: var(--text-dimmer); font-size: 0.88rem; position: relative; }
 
-        .tool-card:hover {
-            background: var(--card-hover); border-color: rgba(232, 0, 90, 0.25);
-            transform: translateY(-6px);
-        }
-
-        .tool-card i {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 18px; display: inline-block; transition: transform 0.3s ease;
-        }
-
-        .tool-card:hover i { transform: scale(1.1); }
-        .tool-card h3 { font-size: 1.2rem; margin-bottom: 8px; font-weight: 700; }
-        .tool-card p { color: var(--text-dimmer); font-size: 0.88rem; }
-
-        #contact {
-            padding: 100px 5%; text-align: center;
-        }
+        /* =============================================
+           CONTACT
+        ============================================= */
+        #contact { padding: 100px 5%; text-align: center; }
 
         .contact-container {
-            max-width: 640px; margin: 0 auto;
-            background: var(--card-bg);
-            padding: 60px 50px; border-radius: 16px;
-            border: 1px solid var(--border-subtle);
+            max-width: 640px; margin: 0 auto; background: var(--card-bg);
+            padding: 60px 50px; border-radius: 20px; border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-card); transition: background 0.45s ease, box-shadow 0.45s ease;
         }
 
-        .contact-container h2 { font-size: 2.2rem; margin-bottom: 14px; font-weight: 800; }
+        .contact-container h2 { font-size: 2.2rem; margin-bottom: 14px; font-weight: 800; color: var(--text-main); }
         .contact-container p { color: var(--text-dim); font-size: 1rem; margin-bottom: 30px; line-height: 1.8; }
 
         .contact-btn {
-            display: inline-flex; align-items: center; gap: 10px;
-            padding: 14px 40px;
-            background: var(--primary);
-            color: white; text-decoration: none; border-radius: 8px;
+            display: inline-flex; align-items: center; gap: 10px; padding: 14px 40px;
+            background: var(--primary); color: white; text-decoration: none; border-radius: 30px;
             font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.85rem;
-            margin-top: 10px; transition: all 0.25s ease;
+            margin-top: 10px; transition: all 0.28s ease; box-shadow: 0 4px 20px var(--primary-glow);
         }
 
-        .contact-btn:hover { background: #c40050; transform: translateY(-2px); }
+        .contact-btn:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 10px 30px var(--primary-glow); }
 
         .contact-methods { display: flex; justify-content: center; gap: 20px; margin-top: 28px; flex-wrap: wrap; }
         .contact-method { display: flex; align-items: center; gap: 9px; color: var(--text-dimmer); font-size: 0.88rem; }
         .contact-method i { color: var(--primary); font-size: 1.1rem; }
 
-        footer { padding: 36px 5%; text-align: center; border-top: 1px solid var(--border-subtle); background: var(--bg-darker); }
+        /* =============================================
+           FOOTER
+        ============================================= */
+        footer { padding: 36px 5%; text-align: center; border-top: 1px solid var(--border-subtle); background: var(--bg-darker); transition: background 0.45s ease; }
         footer p { color: var(--text-dimmer); font-size: 0.88rem; }
 
+        /* =============================================
+           MODAL
+        ============================================= */
         .video-modal {
-            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.94);
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             z-index: 9999; display: none; align-items: center; justify-content: center; padding: 2rem;
         }
 
         .video-modal.active { display: flex; animation: fadeIn 0.25s ease; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .modal-content { width: 90%; max-width: 1100px; position: relative; }
-        .modal-video-wrap {
-            position: relative; padding-bottom: 56.25%; height: 0; border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .modal-video-wrap.portrait {
-            padding-bottom: 177.78%;
-            max-width: 380px;
-            margin: 0 auto;
-        }
-
-        .modal-video-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .modal-video-wrap { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 12px; overflow: hidden; }
+        .modal-video-wrap.portrait { padding-bottom: 177.78%; max-width: 380px; margin: 0 auto; }
 
         .close-modal {
             position: absolute; top: -52px; right: 0; color: white;
             font-size: 2.5rem; cursor: pointer; transition: all 0.25s ease;
             width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
-            border-radius: 8px; background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px; background: var(--close-modal-bg);
         }
 
         .close-modal:hover { background: var(--primary); }
 
+        /* =============================================
+           SOCIAL ICONS
+        ============================================= */
+        .fa-instagram {
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 40%, #d6249f 65%, #285AEB 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .fa-telegram {
+            background: linear-gradient(135deg, #2AABEE, #0088cc);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .fa-x-twitter {
+            -webkit-text-fill-color: transparent;
+        }
+
+        [data-theme="dark"] .fa-x-twitter { background: linear-gradient(135deg, #e8e8e8, #999); -webkit-background-clip: text; }
+        [data-theme="light"] .fa-x-twitter { background: linear-gradient(135deg, #111, #555); -webkit-background-clip: text; }
+
+        .fa-envelope {
+            background: linear-gradient(90deg, #EA4335 0%, #FBBC05 33%, #34A853 66%, #4285F4 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* =============================================
+           RESPONSIVE
+        ============================================= */
         @media (max-width: 768px) {
             nav { padding: 1rem 5%; }
             .menu-toggle { display: flex; }
             .nav-links {
                 position: fixed; top: 0; right: -100%; width: 70%; height: 100vh;
-                background: var(--glass-bg); backdrop-filter: blur(16px);
-                -webkit-backdrop-filter: blur(16px); flex-direction: column;
+                background: var(--glass-bg); backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px); flex-direction: column;
                 padding: 100px 30px; gap: 2rem; transition: right 0.4s ease;
                 border-left: 1px solid var(--border-subtle);
             }
@@ -645,6 +658,7 @@
             .stat-number { font-size: 2.5rem; }
             .contact-container { padding: 40px 28px; }
             .format-tab { padding: 11px 22px; font-size: 0.74rem; }
+            #themeToggle { bottom: 20px; right: 20px; width: 50px; height: 50px; }
         }
 
         @media (max-width: 480px) {
@@ -656,587 +670,414 @@
             .format-tab { border-radius: 7px; }
             .flat-carousel-container { padding: 0 40px; }
         }
-
-        .fa-instagram {
-            background: radial-gradient(circle at 30% 107%, 
-                #fdf497 0%, 
-                #fd5949 40%, 
-                #d6249f 65%, 
-                #285AEB 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .fa-telegram {
-            background: linear-gradient(135deg, #2AABEE, #0088cc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .fa-x-twitter {
-            background: linear-gradient(135deg, #ffffff, #777777);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .fa-envelope {
-            background: linear-gradient(90deg, 
-                #EA4335 0%, 
-                #FBBC05 33%, 
-                #34A853 66%, 
-                #4285F4 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .social-icons a i {
-            transition: transform 0.3s ease, filter 0.3s ease, text-shadow 0.3s ease;
-        }
-
-        .social-icons a:hover i {
-            transform: translateY(-4px) scale(1.2);
-            filter: drop-shadow(0 0 12px rgba(232,0,90,0.6));
-        }
     </style>
 </head>
 <body>
 
-    <div id="animatedBg"></div>
-
-    <!-- Navigation -->
-    <nav id="navbar" role="navigation" aria-label="Main navigation">
-        <div class="nav-profile">
-            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200" alt="Hana Mouassa">
-            <span>HANA MOUASSA</span>
-        </div>
-        <div class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
-            <span></span><span></span><span></span>
-        </div>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#home" class="nav-link">Home</a></li>
-            <li><a href="#mywork" class="nav-link">Portfolio</a></li>
-            <li><a href="#tools" class="nav-link">Workflow</a></li>
-            <li><a href="#contact" class="nav-link" style="color: var(--primary);">Contact</a></li>
-        </ul>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home">
-        <div class="hero-profile" id="heroProfile">
-            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200" alt="Hana Mouassa - Video Editor">
-        </div>
-        <div class="hero-content">
-            <h1 id="heroTitle">Creative Video Editor</h1>
-            <h2 id="heroSubtitle">Visual Storyteller</h2>
-            <p class="hero-tagline" id="heroTagline">Transforming raw footage into compelling narratives through cinematic editing, color grading, and motion design</p>
-            <div class="showreel-container" id="showreelContainer">
-                <div class="showreel-label">
-                    <i class="fas fa-play-circle"></i>
-                    SHOWREEL
-                </div>
-                <div class="showreel-wrapper">
-                    <iframe
-                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&loop=1&playlist=dQw4w9WgXcQ&controls=1&modestbranding=1&rel=0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                    </iframe>
-                </div>
-            </div>
-            <div class="hero-cta" id="heroCta">
-                <a href="#mywork" class="btn-primary">
-                    <span>View My Work</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-                <a href="#contact" class="btn-secondary">
-                    <span>Get In Touch</span>
-                </a>
-            </div>
-        <div class="social-icons" id="socialIcons">
-    <a href="#" id="instagramLink" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-    <a href="#" id="telegramLink" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram"></i></a>
-    <a href="#" id="twitterLink" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-    <a href="#" id="emailLink" target="_blank" rel="noopener noreferrer" aria-label="Email"><i class="fas fa-envelope"></i></a>
+<!-- Loading Overlay -->
+<div id="loadingOverlay" style="position:fixed;inset:0;background:var(--bg-dark);display:flex;align-items:center;justify-content:center;z-index:99999;flex-direction:column;gap:20px; background:#0a0a0f;">
+  <div style="width:50px;height:50px;border:3px solid rgba(37,99,235,0.2);border-top-color:#2563eb;border-radius:50%;animation:spin 1s linear infinite;"></div>
+  <p style="color:#666;font-size:0.9rem;">Loading portfolio...</p>
 </div>
-        </div>
-    </section>
 
-    <!-- PORTFOLIO SECTION -->
-    <section id="mywork">
-        <h2 class="section-title" id="workTitle">Showreel &amp; Projects</h2>
-        <p class="section-subtitle">A curated selection of my latest work</p>
+<div id="animatedBg"></div>
 
-        <!-- Format Tabs — Short Form FIRST (left), Long Form SECOND (right) -->
-        <div class="format-tabs" id="formatTabs">
-            <button class="format-tab active" data-tab="shortform" onclick="switchTab('shortform')">
-                <i class="fas fa-mobile-alt"></i>
-                Short Form
-            </button>
-            <button class="format-tab" data-tab="longform" onclick="switchTab('longform')">
-                <i class="fas fa-film"></i>
-                Long Form
-            </button>
-        </div>
+<!-- Theme Toggle Button -->
+<button id="themeToggle" aria-label="Toggle dark/light mode">
+    <div class="toggle-icon-wrap">
+        <i class="fas fa-moon icon-moon"></i>
+        <i class="fas fa-sun icon-sun"></i>
+    </div>
+</button>
 
-        <!-- Format Description Badge -->
-        <div class="format-descriptor" id="formatDescriptor">
-            <div class="descriptor-badge badge-shortform visible" id="descriptorBadge">
-                <i class="fas fa-mobile-alt"></i>
-                Reels · TikToks · Stories · YouTube Shorts
+<!-- Navigation -->
+<nav id="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-profile">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%2312121a' width='200' height='200'/%3E%3C/svg%3E" alt="Profile Picture">
+        <span>HANA MOUASSA</span>
+    </div>
+    <div class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="nav-link">Home</a></li>
+        <li><a href="#mywork" class="nav-link">Portfolio</a></li>
+        <li><a href="#tools" class="nav-link">Workflow</a></li>
+        <li><a href="#contact" class="nav-link" style="color: var(--primary);">Contact</a></li>
+    </ul>
+</nav>
+
+<!-- Hero Section -->
+<section id="home">
+    <div class="hero-profile" id="heroProfile">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%2312121a' width='200' height='200'/%3E%3C/svg%3E" alt="Profile Picture">
+    </div>
+    <div class="hero-content">
+        <h1 id="heroTitle">Creative Video Editor</h1>
+        <h2 id="heroSubtitle">Visual Storyteller</h2>
+        <p class="hero-tagline" id="heroTagline">Transforming raw footage into compelling narratives through cinematic editing, color grading, and motion design</p>
+        <div class="showreel-container" id="showreelContainer">
+            <div class="showreel-label">
+                <i class="fas fa-play-circle"></i>
+                SHOWREEL
             </div>
-            <div class="descriptor-text visible" id="descriptorText">
-                Scroll-stopping vertical content crafted for maximum engagement
-            </div>
-        </div>
-
-        <!-- ---- SHORT FORM PANEL — active by default ---- -->
-        <div class="carousel-panel active" id="panel-shortform">
-            <div class="flat-carousel-container">
-                <div class="flat-carousel-track-wrap">
-                    <div class="flat-carousel-track" id="track-shortform">
-                        <div class="video-card short-form-card" data-video="dQw4w9WgXcQ" data-portrait="true" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=300&h=534')">
-                            <span class="card-format-tag tag-shortform">Reel</span>
-                            <span class="card-duration">0:30</span>
-                            <i class="fas fa-play play-icon"></i>
-                            <div class="card-overlay"><h3>Instagram Reel</h3><p>Trending Audio · Hook Edit</p></div>
-                        </div>
-                        <div class="video-card short-form-card" data-video="dQw4w9WgXcQ" data-portrait="true" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('https://images.unsplash.com/photo-1598550476439-6847785fcea6?auto=format&fit=crop&q=80&w=300&h=534')">
-                            <span class="card-format-tag tag-shortform">TikTok</span>
-                            <span class="card-duration">0:45</span>
-                            <i class="fas fa-play play-icon"></i>
-                            <div class="card-overlay"><h3>Viral TikTok</h3><p>Text Overlays · Jump Cuts</p></div>
-                        </div>
-                        <div class="video-card short-form-card" data-video="dQw4w9WgXcQ" data-portrait="true" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('https://images.unsplash.com/photo-1601506521793-dc748fc80b67?auto=format&fit=crop&q=80&w=300&h=534')">
-                            <span class="card-format-tag tag-shortform">Story</span>
-                            <span class="card-duration">0:15</span>
-                            <i class="fas fa-play play-icon"></i>
-                            <div class="card-overlay"><h3>Brand Story Ad</h3><p>Swipe-Up CTA · Product Showcase</p></div>
-                        </div>
-                        <div class="video-card short-form-card" data-video="dQw4w9WgXcQ" data-portrait="true" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=300&h=534')">
-                            <span class="card-format-tag tag-shortform">Shorts</span>
-                            <span class="card-duration">0:58</span>
-                            <i class="fas fa-play play-icon"></i>
-                            <div class="card-overlay"><h3>YouTube Short</h3><p>Educational · Fast Pacing</p></div>
-                        </div>
-                        <div class="video-card short-form-card" data-video="dQw4w9WgXcQ" data-portrait="true" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=300&h=534')">
-                            <span class="card-format-tag tag-shortform">Reel</span>
-                            <span class="card-duration">0:22</span>
-                            <i class="fas fa-play play-icon"></i>
-                            <div class="card-overlay"><h3>Fashion Reel</h3><p>Transitions · Color Pop</p></div>
-                        </div>
-                        <div class="video-card short-form-card" data-video="dQw4w9WgXcQ" data-portrait="true" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('https://images.unsplash.com/photo-1542744095-fcf48d80b0fd?auto=format&fit=crop&q=80&w=300&h=534')">
-                            <span class="card-format-tag tag-shortform">TikTok</span>
-                            <span class="card-duration">1:00</span>
-                            <i class="fas fa-play play-icon"></i>
-                            <div class="card-overlay"><h3>Food Content</h3><p>Aesthetic · ASMR Cuts</p></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-nav-flat">
-                    <button class="carousel-btn" id="prevBtn-shortform" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
-                    <div class="carousel-indicators" id="indicators-shortform"></div>
-                    <button class="carousel-btn" id="nextBtn-shortform" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
-                </div>
+            <div class="showreel-wrapper">
+                <div style="font-size:0.9rem;">Loading showreel...</div>
             </div>
         </div>
-
-        <!-- ---- LONG FORM PANEL ---- -->
-        <div class="carousel-panel" id="panel-longform">
-            <div class="flat-carousel-container">
-                <div class="flat-carousel-track-wrap">
-                    <div class="flat-carousel-track" id="track-longform">
-                        <div class="video-card" data-video="dQw4w9WgXcQ" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=450')">
-                            <span class="card-format-tag tag-longform">Long Form</span>
-                            <span class="card-duration">18:42</span>
-                            <i class="fas fa-play play-icon"></i>
-                            <div class="card-overlay"><h3>Cinematic Documentary</h3><p>Color Grading · Sound Design</p></div>
-                        </div>
-                        <div class="video-card" data-video="dQw4w9WgXcQ" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&q=80&w=450')">
-                            <span class="card-format-tag tag-longform">Long Form</span>
-                            <span class="card-duration">4:30</span>
-                            <i class="fas fa-play play-icon"></i>
-                            <div class="card-overlay"><h3>Brand Commercial</h3><p>Fast-Paced Edit · Motion Graphics</p></div>
-                        </div>
-                        <div class="video-card" data-video="dQw4w9WgXcQ" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=450')">
-                            <span class="card-format-tag tag-longform">Long Form</span>
-                            <span class="card-duration">3:55</span>
-                            <i class="fas fa-play play-icon"></i>
-                            <div class="card-overlay"><h3>Music Video</h3><p>Visual Effects · Rhythm Editing</p></div>
-                        </div>
-                        <div class="video-card" data-video="dQw4w9WgXcQ" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=450')">
-                            <span class="card-format-tag tag-longform">Long Form</span>
-                            <span class="card-duration">22:10</span>
-                            <i class="fas fa-play play-icon"></i>
-                            <div class="card-overlay"><h3>Corporate Interview</h3><p>Multi-Camera · B-Roll Integration</p></div>
-                        </div>
-                        <div class="video-card" data-video="dQw4w9WgXcQ" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=450')">
-                            <span class="card-format-tag tag-longform">Long Form</span>
-                            <span class="card-duration">14:07</span>
-                            <i class="fas fa-play play-icon"></i>
-                            <div class="card-overlay"><h3>Travel Vlog</h3><p>Lifestyle · Dynamic Transitions</p></div>
-                        </div>
-                        <div class="video-card" data-video="dQw4w9WgXcQ" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&q=80&w=450')">
-                            <span class="card-format-tag tag-longform">Long Form</span>
-                            <span class="card-duration">8:22</span>
-                            <i class="fas fa-play play-icon"></i>
-                            <div class="card-overlay"><h3>Event Highlight</h3><p>Storytelling · Emotional Arc</p></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-nav-flat">
-                    <button class="carousel-btn" id="prevBtn-longform" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
-                    <div class="carousel-indicators" id="indicators-longform"></div>
-                    <button class="carousel-btn" id="nextBtn-longform" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Stats -->
-    <section id="stats">
-        <div class="stats-grid">
-            <div class="stat-card"><div class="stat-number">500+</div><div class="stat-label">Projects Completed</div></div>
-            <div class="stat-card"><div class="stat-number">150+</div><div class="stat-label">Happy Clients</div></div>
-            <div class="stat-card"><div class="stat-number">8+</div><div class="stat-label">Years Experience</div></div>
-            <div class="stat-card"><div class="stat-number">24/7</div><div class="stat-label">Support Available</div></div>
-        </div>
-    </section>
-
-    <!-- Tools -->
-    <section id="tools">
-        <h2 class="section-title" id="toolsTitle">The Toolkit</h2>
-        <p class="section-subtitle">Professional tools for professional results</p>
-        <div class="tools-grid">
-            <div class="tool-card"><i class="fas fa-film"></i><h3>DaVinci Resolve</h3><p>Advanced Color Correction &amp; Grading</p></div>
-            <div class="tool-card"><i class="fas fa-cut"></i><h3>Premiere Pro</h3><p>Professional Timeline Editing</p></div>
-            <div class="tool-card"><i class="fas fa-magic"></i><h3>After Effects</h3><p>VFX &amp; Motion Graphics</p></div>
-            <div class="tool-card"><i class="fas fa-microphone"></i><h3>Audition</h3><p>Audio Mixing &amp; Sound Design</p></div>
-            <div class="tool-card"><i class="fas fa-video"></i><h3>Final Cut Pro</h3><p>Fast &amp; Efficient Editing</p></div>
-            <div class="tool-card"><i class="fas fa-palette"></i><h3>Photoshop</h3><p>Thumbnail &amp; Graphics Design</p></div>
-        </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact">
-        <div class="contact-container">
-            <h2>Ready to Start a Project?</h2>
-            <p>I'm currently available for freelance work and collaborations. Let's create something amazing together!</p>
-            <a href="mailto:hana@example.com" target="_blank" class="contact-btn">
-                <i class="fas fa-envelope"></i>
-                <span>Send a Message</span>
+        <div class="hero-cta" id="heroCta">
+            <a href="#mywork" class="btn-primary">
+                <span>View My Work</span>
+                <i class="fas fa-arrow-right"></i>
             </a>
-            <div class="contact-methods">
-                <div class="contact-method"><i class="fas fa-phone"></i><span>+1 (555) 123-4567</span></div>
-                <div class="contact-method"><i class="fas fa-map-marker-alt"></i><span>Los Angeles, CA</span></div>
-            </div>
+            <a href="#contact" class="btn-secondary">
+                <span>Get In Touch</span>
+            </a>
         </div>
-    </section>
+        <div class="social-icons" id="socialIcons">
+            <a href="#" id="instagramLink" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" id="telegramLink" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram"></i></a>
+            <a href="#" id="twitterLink" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" id="emailLink" target="_blank" rel="noopener noreferrer" aria-label="Email"><i class="fas fa-envelope"></i></a>
+        </div>
+    </div>
+</section>
 
-    <footer>
-        <p>&copy; 2026 Hana Mouassa. All rights reserved. | Crafted with passion ❤️</p>
-    </footer>
+<!-- PORTFOLIO SECTION -->
+<section id="mywork">
+    <h2 class="section-title" id="workTitle">Showreel &amp; Projects</h2>
+    <p class="section-subtitle">A curated selection of my latest work</p>
 
-    <!-- Video Modal -->
-    <div class="video-modal" id="videoModal" role="dialog" aria-label="Video player">
-        <div class="modal-content">
-            <span class="close-modal" id="closeModal" aria-label="Close video">&times;</span>
-            <div class="modal-video-wrap" id="modalVideoWrap">
-                <iframe id="videoPlayer" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <div class="format-tabs" id="formatTabs">
+        <button class="format-tab active" data-tab="shortform" onclick="switchTab('shortform')">
+            <i class="fas fa-mobile-alt"></i>
+            Short Form
+        </button>
+        <button class="format-tab" data-tab="longform" onclick="switchTab('longform')">
+            <i class="fas fa-film"></i>
+            Long Form
+        </button>
+    </div>
+
+    <div class="format-descriptor" id="formatDescriptor">
+        <div class="descriptor-badge badge-shortform visible" id="descriptorBadge">
+            <i class="fas fa-mobile-alt"></i>
+            Reels · TikToks · Stories · YouTube Shorts
+        </div>
+        <div class="descriptor-text visible" id="descriptorText">
+            Scroll-stopping vertical content crafted for maximum engagement
+        </div>
+    </div>
+
+    <div class="carousel-panel active" id="panel-shortform">
+        <div class="flat-carousel-container">
+            <div class="flat-carousel-track-wrap">
+                <div class="flat-carousel-track" id="track-shortform"></div>
+            </div>
+            <div class="carousel-nav-flat">
+                <button class="carousel-btn" id="prevBtn-shortform" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+                <div class="carousel-indicators" id="indicators-shortform"></div>
+                <button class="carousel-btn" id="nextBtn-shortform" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
     </div>
 
-    <script>
-        // ===== NAVBAR =====
-        const navbar = document.getElementById('navbar');
-        const menuToggle = document.getElementById('menuToggle');
-        const navLinks = document.getElementById('navLinks');
-        window.addEventListener('scroll', () => navbar.classList.toggle('visible', window.scrollY > 100));
-        menuToggle.addEventListener('click', () => { menuToggle.classList.toggle('active'); navLinks.classList.toggle('active'); });
-        document.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', () => { menuToggle.classList.remove('active'); navLinks.classList.remove('active'); }));
+    <div class="carousel-panel" id="panel-longform">
+        <div class="flat-carousel-container">
+            <div class="flat-carousel-track-wrap">
+                <div class="flat-carousel-track" id="track-longform"></div>
+            </div>
+            <div class="carousel-nav-flat">
+                <button class="carousel-btn" id="prevBtn-longform" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+                <div class="carousel-indicators" id="indicators-longform"></div>
+                <button class="carousel-btn" id="nextBtn-longform" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+</section>
 
-        const sections = document.querySelectorAll('section[id]');
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            sections.forEach(section => {
-                if (scrollY > section.offsetTop - 100 && scrollY <= section.offsetTop - 100 + section.offsetHeight) {
-                    document.querySelectorAll('.nav-link').forEach(link => {
-                        link.classList.toggle('active', link.getAttribute('href') === '#' + section.getAttribute('id'));
-                    });
-                }
-            });
-        });
+<section id="stats">
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-number">500+</div><div class="stat-label">Projects Completed</div></div>
+        <div class="stat-card"><div class="stat-number">150+</div><div class="stat-label">Happy Clients</div></div>
+        <div class="stat-card"><div class="stat-number">8+</div><div class="stat-label">Years Experience</div></div>
+        <div class="stat-card"><div class="stat-number">24/7</div><div class="stat-label">Support Available</div></div>
+    </div>
+</section>
 
-        // ===== TAB SWITCHING =====
-        const descriptorBadge = document.getElementById('descriptorBadge');
-        const descriptorText = document.getElementById('descriptorText');
+<section id="tools">
+    <h2 class="section-title" id="toolsTitle">The Toolkit</h2>
+    <p class="section-subtitle">Professional tools for professional results</p>
+    <div class="tools-grid">
+        <div class="tool-card"><i class="fas fa-film"></i><h3>DaVinci Resolve</h3><p>Advanced Color Correction &amp; Grading</p></div>
+        <div class="tool-card"><i class="fas fa-cut"></i><h3>Premiere Pro</h3><p>Professional Timeline Editing</p></div>
+        <div class="tool-card"><i class="fas fa-magic"></i><h3>After Effects</h3><p>VFX &amp; Motion Graphics</p></div>
+        <div class="tool-card"><i class="fas fa-microphone"></i><h3>Audition</h3><p>Audio Mixing &amp; Sound Design</p></div>
+        <div class="tool-card"><i class="fas fa-video"></i><h3>Final Cut Pro</h3><p>Fast &amp; Efficient Editing</p></div>
+        <div class="tool-card"><i class="fas fa-palette"></i><h3>Photoshop</h3><p>Thumbnail &amp; Graphics Design</p></div>
+    </div>
+</section>
 
-        const tabContent = {
-            shortform: {
-                badgeClass: 'badge-shortform',
-                badgeIcon: 'fas fa-mobile-alt',
-                badgeLabel: 'Reels · TikToks · Stories · YouTube Shorts',
-                desc: 'Scroll-stopping vertical content crafted for maximum engagement'
-            },
-            longform: {
-                badgeClass: 'badge-longform',
-                badgeIcon: 'fas fa-film',
-                badgeLabel: 'Documentaries · Commercials · Music Videos',
-                desc: 'Full-length productions with cinematic color grading &amp; storytelling'
-            }
-        };
+<section id="contact">
+    <div class="contact-container">
+        <h2>Ready to Start a Project?</h2>
+        <p>I'm currently available for freelance work and collaborations. Let's create something amazing together!</p>
+        <a href="mailto:hana@example.com" target="_blank" class="contact-btn">
+            <i class="fas fa-envelope"></i>
+            <span>Send a Message</span>
+        </a>
+        <div class="contact-methods">
+            <div class="contact-method"><i class="fas fa-phone"></i><span>+1 (555) 123-4567</span></div>
+            <div class="contact-method"><i class="fas fa-map-marker-alt"></i><span>Los Angeles, CA</span></div>
+        </div>
+    </div>
+</section>
 
-        function switchTab(tab) {
-            document.querySelectorAll('.format-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
-            document.querySelectorAll('.carousel-panel').forEach(panel => panel.classList.toggle('active', panel.id === 'panel-' + tab));
+<footer>
+    <p>&copy; 2026 Hana Mouassa. All rights reserved. | Crafted with passion ❤️</p>
+</footer>
 
-            descriptorBadge.classList.remove('visible');
-            descriptorText.classList.remove('visible');
+<div class="video-modal" id="videoModal" role="dialog" aria-label="Video player">
+    <div class="modal-content">
+        <span class="close-modal" id="closeModal" aria-label="Close video">&times;</span>
+        <div class="modal-video-wrap" id="modalVideoWrap"></div>
+    </div>
+</div>
 
-            setTimeout(() => {
-                const content = tabContent[tab];
-                descriptorBadge.className = 'descriptor-badge ' + content.badgeClass;
-                descriptorBadge.innerHTML = `<i class="${content.badgeIcon}"></i> ${content.badgeLabel}`;
-                descriptorText.innerHTML = content.desc;
-                setTimeout(() => {
-                    descriptorBadge.classList.add('visible');
-                    descriptorText.classList.add('visible');
-                }, 50);
-            }, 280);
-        }
+<script>
+    /* ── THEME TOGGLE ─────────────────────────────── */
+    const html = document.documentElement;
+    const themeBtn = document.getElementById('themeToggle');
 
-        // ===== FLAT CAROUSEL FACTORY =====
-        function initFlatCarousel(id) {
-            const track = document.getElementById('track-' + id);
-            const cards = track.querySelectorAll('.video-card');
-            const prevBtn = document.getElementById('prevBtn-' + id);
-            const nextBtn = document.getElementById('nextBtn-' + id);
-            const indicatorsContainer = document.getElementById('indicators-' + id);
+    // Load saved preference
+    const savedTheme = localStorage.getItem('hana-theme') || 'dark';
+    html.setAttribute('data-theme', savedTheme);
 
-            let currentIndex = 0;
-            const visibleCount = () => {
-                const w = window.innerWidth;
-                if (id === 'shortform') return w < 480 ? 2 : w < 768 ? 3 : 4;
-                return w < 480 ? 1 : w < 768 ? 2 : 3;
-            };
-            const totalSlides = () => Math.max(0, cards.length - visibleCount());
+    themeBtn.addEventListener('click', () => {
+        const current = html.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('hana-theme', next);
 
-            function buildIndicators() {
-                indicatorsContainer.innerHTML = '';
-                const total = totalSlides() + 1;
-                for (let i = 0; i < total; i++) {
-                    const dot = document.createElement('div');
-                    dot.className = 'indicator' + (i === 0 ? ' active' : '');
-                    dot.addEventListener('click', () => goTo(i));
-                    indicatorsContainer.appendChild(dot);
-                }
-            }
-
-            function update() {
-                const cardWidth = cards[0].offsetWidth + 20;
-                track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
-                indicatorsContainer.querySelectorAll('.indicator').forEach((dot, i) => {
-                    dot.classList.toggle('active', i === currentIndex);
-                });
-                prevBtn.disabled = currentIndex === 0;
-                nextBtn.disabled = currentIndex >= totalSlides();
-            }
-
-            function goTo(index) {
-                currentIndex = Math.max(0, Math.min(index, totalSlides()));
-                update();
-            }
-
-            prevBtn.addEventListener('click', () => goTo(currentIndex - 1));
-            nextBtn.addEventListener('click', () => goTo(currentIndex + 1));
-
-            let touchStartX = 0;
-            track.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
-            track.addEventListener('touchend', e => {
-                const dx = touchStartX - e.changedTouches[0].screenX;
-                if (Math.abs(dx) > 50) dx > 0 ? goTo(currentIndex + 1) : goTo(currentIndex - 1);
-            }, { passive: true });
-
-            window.addEventListener('resize', () => { buildIndicators(); update(); });
-
-            buildIndicators();
-            update();
-        }
-
-        initFlatCarousel('shortform');
-        initFlatCarousel('longform');
-
-        // Keyboard navigation
-        document.addEventListener('keydown', e => {
-            const activeId = document.querySelector('.format-tab.active').dataset.tab;
-            if (e.key === 'ArrowLeft') document.getElementById('prevBtn-' + activeId).click();
-            if (e.key === 'ArrowRight') document.getElementById('nextBtn-' + activeId).click();
-        });
-
-        // ===== VIDEO MODAL =====
-        const modal = document.getElementById('videoModal');
-        const player = document.getElementById('videoPlayer');
-        const modalWrap = document.getElementById('modalVideoWrap');
-        const closeBtn = document.getElementById('closeModal');
-
-      document.addEventListener('click', e => {
-    const card = e.target.closest('.video-card');
-    if (!card) return;
-    const isPortrait = card.dataset.portrait === 'true';
-    const isLocal = card.dataset.localVideo === 'true';
-    modalWrap.classList.toggle('portrait', isPortrait);
-
-    if (isLocal) {
-        // Use <video> tag for local files
-        modalWrap.innerHTML = `<video src="${card.dataset.video}" autoplay controls playsinline
-          style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain"></video>`;
-    } else {
-        // YouTube embed
-        modalWrap.innerHTML = `<iframe id="videoPlayer" src="https://www.youtube.com/embed/${card.dataset.video}?autoplay=1&rel=0"
-          frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-    }
-    
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-});
-
-        function closeModal() { modal.classList.remove('active'); player.src = ''; document.body.style.overflow = 'auto'; }
-        closeBtn.addEventListener('click', closeModal);
-        modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-        document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
-
-        // ===== ANIMATIONS =====
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('animate'); });
-        }, { threshold: 0.1, rootMargin: '0px 0px -80px 0px' });
-
-        ['showreelContainer','heroProfile','heroTitle','heroSubtitle','heroTagline','heroCta','socialIcons','workTitle','toolsTitle']
-            .forEach(id => { const el = document.getElementById(id); if (el) observer.observe(el); });
-
-        document.querySelectorAll('.tool-card').forEach((card, i) => {
-            card.style.transitionDelay = (i * 0.08) + 's';
-            observer.observe(card);
-        });
-
-      // ===== SMOOTH SCROLL =====
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        const href = this.getAttribute('href');
-        // Only prevent default and smooth scroll for internal anchor links
-        if (href && href.startsWith('#') && href.length > 1) {
-            e.preventDefault();
-            const target = document.querySelector(href);
-            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        // Pulse animation
+        themeBtn.style.transform = 'scale(0.88) rotate(20deg)';
+        setTimeout(() => { themeBtn.style.transform = ''; }, 220);
     });
-});
-    </script>
-    <script>
-// ===== LOAD DYNAMIC DATA FROM API =====
+
+    /* ── NAV ────────────────────────────────────────── */
+    const navbar = document.getElementById('navbar');
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    window.addEventListener('scroll', () => navbar.classList.toggle('visible', window.scrollY > 100));
+    menuToggle.addEventListener('click', () => { menuToggle.classList.toggle('active'); navLinks.classList.toggle('active'); });
+    document.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', () => { menuToggle.classList.remove('active'); navLinks.classList.remove('active'); }));
+
+    const sections = document.querySelectorAll('section[id]');
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        sections.forEach(section => {
+            if (scrollY > section.offsetTop - 100 && scrollY <= section.offsetTop - 100 + section.offsetHeight) {
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === '#' + section.getAttribute('id'));
+                });
+            }
+        });
+    });
+
+    /* ── TABS ────────────────────────────────────── */
+    const descriptorBadge = document.getElementById('descriptorBadge');
+    const descriptorText = document.getElementById('descriptorText');
+
+    const tabContent = {
+        shortform: { badgeClass: 'badge-shortform', badgeIcon: 'fas fa-mobile-alt', badgeLabel: 'Reels · TikToks · Stories · YouTube Shorts', desc: 'Scroll-stopping vertical content crafted for maximum engagement' },
+        longform: { badgeClass: 'badge-longform', badgeIcon: 'fas fa-film', badgeLabel: 'Documentaries · Commercials · Music Videos', desc: 'Full-length productions with cinematic color grading &amp; storytelling' }
+    };
+
+    function switchTab(tab) {
+        document.querySelectorAll('.format-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+        document.querySelectorAll('.carousel-panel').forEach(panel => panel.classList.toggle('active', panel.id === 'panel-' + tab));
+        descriptorBadge.classList.remove('visible'); descriptorText.classList.remove('visible');
+        setTimeout(() => {
+            const c = tabContent[tab];
+            descriptorBadge.className = 'descriptor-badge ' + c.badgeClass;
+            descriptorBadge.innerHTML = `<i class="${c.badgeIcon}"></i> ${c.badgeLabel}`;
+            descriptorText.innerHTML = c.desc;
+            setTimeout(() => { descriptorBadge.classList.add('visible'); descriptorText.classList.add('visible'); }, 50);
+        }, 280);
+    }
+
+    /* ── CAROUSEL ─────────────────────────────────── */
+    function initFlatCarousel(id) {
+        const track = document.getElementById('track-' + id);
+        const cards = track.querySelectorAll('.video-card');
+        const prevBtn = document.getElementById('prevBtn-' + id);
+        const nextBtn = document.getElementById('nextBtn-' + id);
+        const indicatorsContainer = document.getElementById('indicators-' + id);
+
+        let currentIndex = 0;
+        const visibleCount = () => {
+            const w = window.innerWidth;
+            if (id === 'shortform') return w < 480 ? 2 : w < 768 ? 3 : 4;
+            return w < 480 ? 1 : w < 768 ? 2 : 3;
+        };
+        const totalSlides = () => Math.max(0, cards.length - visibleCount());
+
+        function buildIndicators() {
+            indicatorsContainer.innerHTML = '';
+            const total = totalSlides() + 1;
+            for (let i = 0; i < total; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'indicator' + (i === 0 ? ' active' : '');
+                dot.addEventListener('click', () => goTo(i));
+                indicatorsContainer.appendChild(dot);
+            }
+        }
+
+        function update() {
+            const cardWidth = cards[0].offsetWidth + 20;
+            track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+            indicatorsContainer.querySelectorAll('.indicator').forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex >= totalSlides();
+        }
+
+        function goTo(index) { currentIndex = Math.max(0, Math.min(index, totalSlides())); update(); }
+
+        prevBtn.addEventListener('click', () => goTo(currentIndex - 1));
+        nextBtn.addEventListener('click', () => goTo(currentIndex + 1));
+
+        let touchStartX = 0;
+        track.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+        track.addEventListener('touchend', e => {
+            const dx = touchStartX - e.changedTouches[0].screenX;
+            if (Math.abs(dx) > 50) dx > 0 ? goTo(currentIndex + 1) : goTo(currentIndex - 1);
+        }, { passive: true });
+
+        window.addEventListener('resize', () => { buildIndicators(); update(); });
+        buildIndicators(); update();
+    }
+
+    document.addEventListener('keydown', e => {
+        const activeId = document.querySelector('.format-tab.active').dataset.tab;
+        if (e.key === 'ArrowLeft') document.getElementById('prevBtn-' + activeId).click();
+        if (e.key === 'ArrowRight') document.getElementById('nextBtn-' + activeId).click();
+    });
+
+    /* ── MODAL ───────────────────────────────────── */
+    const modal = document.getElementById('videoModal');
+    const modalWrap = document.getElementById('modalVideoWrap');
+    const closeBtn = document.getElementById('closeModal');
+
+    document.addEventListener('click', e => {
+        const card = e.target.closest('.video-card');
+        if (!card) return;
+        const isPortrait = card.dataset.portrait === 'true';
+        const isLocal = card.dataset.localVideo === 'true';
+        modalWrap.classList.toggle('portrait', isPortrait);
+        if (isLocal) {
+            modalWrap.innerHTML = `<video src="${card.dataset.video}" autoplay controls playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain"></video>`;
+        } else {
+            modalWrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${card.dataset.video}?autoplay=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>`;
+        }
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+
+    function closeModal() { modal.classList.remove('active'); modalWrap.innerHTML = ''; document.body.style.overflow = 'auto'; }
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
+
+    /* ── INTERSECTION OBSERVER ─────────────────── */
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('animate'); });
+    }, { threshold: 0.1, rootMargin: '0px 0px -80px 0px' });
+
+    ['showreelContainer','heroProfile','heroTitle','heroSubtitle','heroTagline','heroCta','socialIcons','workTitle','toolsTitle']
+        .forEach(id => { const el = document.getElementById(id); if (el) observer.observe(el); });
+
+    document.querySelectorAll('.tool-card').forEach((card, i) => {
+        card.style.transitionDelay = (i * 0.08) + 's';
+        observer.observe(card);
+    });
+
+    /* ── SMOOTH SCROLL ───────────────────────────── */
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href && href.startsWith('#') && href.length > 1) {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+</script>
+
+<script>
 const API_URL = 'https://hana-portfolio-backend-ife6.onrender.com';
 
 async function loadSiteData() {
   try {
-    // Load profile
     const profile = await fetch(API_URL + '/api/profile').then(r => r.json());
-    console.log('Profile loaded:', profile);
-    
     if (profile.profile_picture_url) {
-      document.querySelectorAll('.nav-profile img, .hero-profile img').forEach(img => {
-        img.src = profile.profile_picture_url;
-      });
+      document.querySelectorAll('.nav-profile img, .hero-profile img').forEach(img => { img.src = profile.profile_picture_url; });
     }
-    
-    if (profile.name) {
-      document.querySelector('.nav-profile span').textContent = profile.name.toUpperCase();
+    if (profile.name) document.querySelector('.nav-profile span').textContent = profile.name.toUpperCase();
+    if (profile.instagram_url) document.getElementById('instagramLink').href = profile.instagram_url;
+    if (profile.twitter_url) document.getElementById('twitterLink').href = profile.twitter_url;
+    if (profile.telegram_url) document.getElementById('telegramLink').href = profile.telegram_url;
+    if (profile.email) {
+      const emailHref = profile.email.startsWith('http') ? profile.email : 'mailto:' + profile.email;
+      document.getElementById('emailLink').href = emailHref;
+      const contactBtn = document.querySelector('.contact-btn');
+      if (contactBtn) contactBtn.href = emailHref;
     }
-    
-   // Social links
-if (profile.instagram_url) {
-  document.getElementById('instagramLink').href = profile.instagram_url;
-}
-if (profile.twitter_url) {
-  document.getElementById('twitterLink').href = profile.twitter_url;
-}
-if (profile.telegram_url) {
-  document.getElementById('telegramLink').href = profile.telegram_url;
-}
-if (profile.email) {
-  // Check if it's already a full URL (starts with http)
-  const emailHref = profile.email.startsWith('http') ? profile.email : 'mailto:' + profile.email;
-  document.getElementById('emailLink').href = emailHref;
-  
-  // Update contact button
-  const contactBtn = document.querySelector('.contact-btn');
-  if (contactBtn) contactBtn.href = emailHref;
-}
 
-    // Load showreel
     const showreel = await fetch(API_URL + '/api/showreel').then(r => r.json());
-    console.log('Showreel loaded:', showreel);
-    
     if (showreel.video_url) {
       const wrapper = document.querySelector('.showreel-wrapper');
-      wrapper.innerHTML = `
-        <video autoplay muted loop controls playsinline
-          style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover">
-          <source src="${showreel.video_url}" type="video/mp4">
-        </video>`;
+      wrapper.innerHTML = `<video autoplay muted loop controls playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover"><source src="${showreel.video_url}" type="video/mp4"></video>`;
     }
 
-    // Load videos and rebuild cards
     await buildVideoCards('short');
     await buildVideoCards('long');
-    
-    console.log('✅ All data loaded successfully');
+
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay) { loadingOverlay.style.opacity = '0'; setTimeout(() => loadingOverlay.remove(), 300); }
   } catch (error) {
-    console.error('❌ Error loading data:', error);
+    console.error('Error loading data:', error);
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay) loadingOverlay.remove();
   }
 }
 
 async function buildVideoCards(type) {
   try {
-    const videos = await fetch(`/api/videos?type=${type}`).then(r => r.json());
-    console.log(`${type} videos loaded:`, videos);
-    
+    const videos = await fetch(API_URL + `/api/videos?type=${type}`).then(r => r.json());
     const track = document.getElementById('track-' + (type === 'short' ? 'shortform' : 'longform'));
-    if (!videos || videos.length === 0) {
-      console.log(`No ${type} videos found, keeping defaults`);
-      return;
-    }
-    
+    if (!videos || videos.length === 0) return;
     track.innerHTML = '';
-    
     videos.forEach(v => {
       const card = document.createElement('div');
       card.className = 'video-card' + (type === 'short' ? ' short-form-card' : '');
       card.dataset.video = v.video_url || '';
       card.dataset.portrait = v.is_portrait ? 'true' : 'false';
       card.dataset.localVideo = 'true';
-      
-      if (v.thumbnail_url) {
-        card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('${v.thumbnail_url}')`;
-      }
-      
+      if (v.thumbnail_url) card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('${v.thumbnail_url}')`;
       card.innerHTML = `
         <span class="card-format-tag ${type==='short'?'tag-shortform':'tag-longform'}">${v.format_tag||''}</span>
         <span class="card-duration">${v.duration_label||''}</span>
         <i class="fas fa-play play-icon"></i>
-        <div class="card-overlay">
-          <h3>${v.title}</h3>
-          <p>${v.subtitle||''}</p>
-        </div>`;
-      
+        <div class="card-overlay"><h3>${v.title}</h3><p>${v.subtitle||''}</p></div>`;
       track.appendChild(card);
     });
-    
-    // Reinitialize carousel after adding new cards
     initFlatCarousel(type === 'short' ? 'shortform' : 'longform');
   } catch (error) {
     console.error(`Error loading ${type} videos:`, error);
   }
 }
 
-// Call on page load
 loadSiteData();
 </script>
 </body>
