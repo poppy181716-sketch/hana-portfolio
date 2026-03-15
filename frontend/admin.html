@@ -8,9 +8,14 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
   :root {
-    --primary: rgb(33, 159, 232); --bg: #0d0d0d; --card: #181818;
-    --border: rgba(37, 99, 101, 0.08); --text: #f0f0f0; --dim: #888;
-  }
+  --primary: #2563eb;
+  --bg: #f5f5f7;
+  --card: #ffffff;
+  --border: rgba(0, 0, 0, 0.1);
+  --text: #1a1a1a;
+  --dim: #666666;
+  --input-bg: #f9f9fb;
+}
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
@@ -25,7 +30,7 @@
   .login-box h2 { font-size:1.6rem; margin-bottom:8px; }
   .login-box p { color:var(--dim); margin-bottom:28px; font-size:0.9rem; }
   .login-box input {
-    width:100%; padding:13px 16px; background:#111; border:1px solid var(--border);
+width:100%; padding:13px 16px; background:var(--input-bg); border:1px solid var(--border);
     border-radius:8px; color:var(--text); font-size:0.95rem; margin-bottom:14px; outline:none;
   }
   .login-box input:focus { border-color:var(--primary); }
