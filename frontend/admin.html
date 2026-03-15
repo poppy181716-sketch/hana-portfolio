@@ -57,6 +57,12 @@ width:100%; padding:13px 16px; background:var(--input-bg); border:1px solid var(
 
   /* SECTIONS */
   .section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:32px; margin-bottom:28px; }
+  /* Add this new rule: */
+.table-wrapper {
+  overflow-x: auto;
+  margin: 0 -10px;
+  padding: 0 10px;
+}
   .section-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
   .section-header h2 { font-size:1.1rem; font-weight:700; display:flex; align-items:center; gap:10px; }
   .section-header h2 i { color:var(--primary); }
@@ -245,12 +251,14 @@ width:100%; padding:13px 16px; background:var(--input-bg); border:1px solid var(
       <div class="section-header">
         <h2><i class="fas fa-mobile-alt"></i> Short Form Videos</h2>
       </div>
-      <table class="video-table">
-        <thead>
-          <tr><th>Thumb</th><th>Title</th><th>Tag</th><th>Duration</th><th>Actions</th></tr>
-        </thead>
-        <tbody id="shortVideosBody"></tbody>
-      </table>
+      <div class="table-wrapper">
+  <table class="video-table">
+    <thead>
+      <tr><th>Thumb</th><th>Title</th><th>Tag</th><th>Duration</th><th>Actions</th></tr>
+    </thead>
+    <tbody id="shortVideosBody"></tbody>
+  </table>
+</div>
       <button class="add-btn" onclick="openAddModal('short')">
         <i class="fas fa-plus"></i> Add Short Form Video
       </button>
@@ -261,12 +269,14 @@ width:100%; padding:13px 16px; background:var(--input-bg); border:1px solid var(
       <div class="section-header">
         <h2><i class="fas fa-film"></i> Long Form Videos</h2>
       </div>
-      <table class="video-table">
-        <thead>
-          <tr><th>Thumb</th><th>Title</th><th>Tag</th><th>Duration</th><th>Actions</th></tr>
-        </thead>
-        <tbody id="longVideosBody"></tbody>
-      </table>
+      <div class="table-wrapper">
+  <table class="video-table">
+    <thead>
+      <tr><th>Thumb</th><th>Title</th><th>Tag</th><th>Duration</th><th>Actions</th></tr>
+    </thead>
+    <tbody id="longVideosBody"></tbody>
+  </table>
+</div>
       <button class="add-btn" onclick="openAddModal('long')">
         <i class="fas fa-plus"></i> Add Long Form Video
       </button>
