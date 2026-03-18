@@ -1058,19 +1058,7 @@ async function buildVideoCards(type) {
     const track = document.getElementById('track-' + (type === 'short' ? 'shortform' : 'longform'));
     if (!videos || videos.length === 0) return;
     track.innerHTML = '';
-    videos.forEach(v => {
-      const card = document.createElement('div');
-      card.className = 'video-card' + (type === 'short' ? ' short-form-card' : '');
-      card.dataset.video = v.video_url || '';
-      card.dataset.portrait = v.is_portrait ? 'true' : 'false';
-      card.dataset.localVideo = 'true';
     
-async function buildVideoCards(type) {
-  try {
-    const videos = await fetch(API_URL + `/api/videos?type=${type}`).then(r => r.json());
-    const track = document.getElementById('track-' + (type === 'short' ? 'shortform' : 'longform'));
-    if (!videos || videos.length === 0) return;
-    track.innerHTML = '';
     videos.forEach(v => {
       const card = document.createElement('div');
       card.className = 'video-card' + (type === 'short' ? ' short-form-card' : '');
@@ -1078,14 +1066,13 @@ async function buildVideoCards(type) {
       card.dataset.portrait = v.is_portrait ? 'true' : 'false';
       card.dataset.localVideo = 'true';
       
-      // Thumbnail with fallback
+      // If thumbnail exists, use it
       if (v.thumbnail_url) {
         card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('${v.thumbnail_url}')`;
-      } else {
-        // Gray placeholder when no thumbnail
-        card.style.backgroundColor = 'var(--card-bg)';
-        card.style.backgroundImage = 'linear-gradient(135deg, rgba(37,99,235,0.05) 0%, rgba(14,165,233,0.05) 100%)';
-        card.style.border = '2px dashed var(--border-subtle)';
+      } 
+      // If no thumbnail, generate from video
+      else if (v.video_url) {
+        generateVideoThumbnail(v.video_url, card);
       }
       
       card.innerHTML = `
@@ -1095,23 +1082,49 @@ async function buildVideoCards(type) {
         <div class="card-overlay"><h3>${v.title}</h3><p>${v.subtitle||''}</p></div>`;
       track.appendChild(card);
     });
+    
     initFlatCarousel(type === 'short' ? 'shortform' : 'longform');
   } catch (error) {
     console.error(`Error loading ${type} videos:`, error);
   }
 }
 
-      card.innerHTML = `
-        <span class="card-format-tag ${type==='short'?'tag-shortform':'tag-longform'}">${v.format_tag||''}</span>
-        <span class="card-duration">${v.duration_label||''}</span>
-        <i class="fas fa-play play-icon"></i>
-        <div class="card-overlay"><h3>${v.title}</h3><p>${v.subtitle||''}</p></div>`;
-      track.appendChild(card);
-    });
-    initFlatCarousel(type === 'short' ? 'shortform' : 'longform');
-  } catch (error) {
-    console.error(`Error loading ${type} videos:`, error);
-  }
+// NEW FUNCTION: Generate thumbnail from video
+function generateVideoThumbnail(videoUrl, cardElement) {
+  const video = document.createElement('video');
+  video.src = videoUrl;
+  video.crossOrigin = 'anonymous';
+  video.muted = true;
+  video.playsInline = true;
+  
+  // Seek to 1 second to get a better frame
+  video.currentTime = 1;
+  
+  video.addEventListener('loadeddata', function() {
+    try {
+      // Create canvas to capture frame
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // Convert to image URL
+      const thumbnailUrl = canvas.toDataURL('image/jpeg', 0.8);
+      
+      // Set as background
+      cardElement.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('${thumbnailUrl}')`;
+    } catch (error) {
+      console.error('Error generating thumbnail:', error);
+      // Fallback to gray background
+      cardElement.style.backgroundColor = 'var(--card-bg)';
+    }
+  });
+  
+  video.addEventListener('error', function() {
+    // Fallback if video can't load
+    cardElement.style.backgroundColor = 'var(--card-bg)';
+  });
 }
 
 loadSiteData();
