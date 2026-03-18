@@ -1064,7 +1064,8 @@ async function buildVideoCards(type) {
       card.dataset.video = v.video_url || '';
       card.dataset.portrait = v.is_portrait ? 'true' : 'false';
       card.dataset.localVideo = 'true';
-      if (v.thumbnail_url) card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('${v.thumbnail_url}')`;
+      const thumbnailUrl = v.thumbnail_url || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="250"%3E%3Crect fill="%2312121a" width="400" height="250"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="18" fill="%23666"%3ENo Thumbnail%3C/text%3E%3C/svg%3E';
+card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('${thumbnailUrl}')`;
       card.innerHTML = `
         <span class="card-format-tag ${type==='short'?'tag-shortform':'tag-longform'}">${v.format_tag||''}</span>
         <span class="card-duration">${v.duration_label||''}</span>
