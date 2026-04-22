@@ -299,44 +299,29 @@
     transition: opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s;
     overflow: visible;
 }
+.growth-chart {
+    position: absolute; top: 10px; right: 30px;
+    width: 340px; opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.4s ease 0.2s, transform 0.4s ease 0.2s;
+    overflow: visible;
+}
 .growth-chart.animate {
     opacity: 1;
     transform: translateX(0);
 }
 
-/* Line draw animation — zig-zag grows left to right over 2s */
-@keyframes drawLine {
-    from { stroke-dashoffset: 600; }
-    to   { stroke-dashoffset: 0; }
+@keyframes pulseRing {
+    0%   { r: 10; opacity: 0.5; }
+    100% { r: 22; opacity: 0; }
 }
-
-/* Area fade in after line is done */
-@keyframes areaFadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+#pulseRing  { animation: none; }
+#pulseRing2 { animation: none; }
+.growth-chart.animate #pulseRing {
+    animation: pulseRing 1.2s ease-out infinite;
 }
-
-/* Glow dot pop after line finishes */
-@keyframes glowPop {
-    0%   { opacity: 0; transform: scale(0.4); }
-    70%  { opacity: 1; transform: scale(1.2); }
-    100% { opacity: 1; transform: scale(1); }
-}
-
-.growth-chart.animate #chartLine {
-    animation: drawLine 2s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
-}
-.growth-chart.animate #chartArea {
-    animation: areaFadeIn 0.6s ease 2.3s forwards;
-}
-.growth-chart.animate #glowDot {
-    animation: glowPop 0.5s ease 2.3s forwards;
-}
-.growth-chart.animate #glowRing1 {
-    animation: areaFadeIn 0.5s ease 2.4s forwards;
-}
-.growth-chart.animate #glowRing2 {
-    animation: areaFadeIn 0.5s ease 2.5s forwards;
+.growth-chart.animate #pulseRing2 {
+    animation: pulseRing 1.2s ease-out 0.4s infinite;
 }
 
         /* Floating tool badges */
@@ -821,54 +806,55 @@
             <stop offset="100%" stop-color="#8b5cf6"/>
         </linearGradient>
         <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.35"/>
+            <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.30"/>
             <stop offset="100%" stop-color="#ec4899" stop-opacity="0.02"/>
         </linearGradient>
-        <filter id="arrowGlow" x="-40%" y="-40%" width="180%" height="180%">
+        <filter id="arrowGlow" x="-60%" y="-60%" width="220%" height="220%">
             <feGaussianBlur stdDeviation="5" result="blur"/>
             <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
+        <filter id="lineGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+
+        <!-- Clip path that reveals line left-to-right over time via JS -->
+        <clipPath id="lineReveal">
+            <rect id="revealRect" x="0" y="-20" width="0" height="300"/>
+        </clipPath>
     </defs>
 
-    <!-- Subtle grid lines -->
-    <line x1="0" y1="210" x2="320" y2="210" stroke="rgba(139,92,246,0.12)" stroke-width="1"/>
-    <line x1="0" y1="165" x2="320" y2="165" stroke="rgba(139,92,246,0.08)" stroke-width="1"/>
-    <line x1="0" y1="120" x2="320" y2="120" stroke="rgba(139,92,246,0.08)" stroke-width="1"/>
-    <line x1="0" y1="75"  x2="320" y2="75"  stroke="rgba(139,92,246,0.08)" stroke-width="1"/>
+    <!-- Grid lines -->
+    <line x1="0" y1="215" x2="330" y2="215" stroke="rgba(139,92,246,0.12)" stroke-width="1"/>
+    <line x1="0" y1="168" x2="330" y2="168" stroke="rgba(139,92,246,0.08)" stroke-width="1"/>
+    <line x1="0" y1="121" x2="330" y2="121" stroke="rgba(139,92,246,0.08)" stroke-width="1"/>
+    <line x1="0" y1="74"  x2="330" y2="74"  stroke="rgba(139,92,246,0.08)" stroke-width="1"/>
 
-    <!-- Area fill — fades in after line draws -->
+    <!-- Filled area under line — fades in at end -->
     <path id="chartArea"
-          d="M10 205 C 40 198, 75 190, 105 175 C 138 158, 162 138, 192 112 C 222 86, 248 58, 272 22 L 272 215 Z"
-          fill="url(#chartGrad)" opacity="0"/>
+          d="M15 212 L 60 195 L 85 205 L 120 182 L 145 192 L 185 158 L 210 170 L 250 128 L 275 142 L 305 88 L 318 38 L 318 218 Z"
+          fill="url(#chartGrad)" opacity="0"
+          style="transition: opacity 0.7s ease;"/>
 
-    <!-- ZIG-ZAG growth line — animates via stroke-dashoffset -->
-    <path id="chartLine"
-          d="M10 205
-             C 30 200, 45 210, 60 198
-             C 75 186, 85 195, 105 178
-             C 125 161, 138 172, 158 152
-             C 178 132, 188 145, 210 122
-             C 232 99, 242 115, 262 88
-             C 270 75, 272 50, 272 22"
+    <!-- The zig-zag line, clipped to reveal progressively -->
+    <polyline id="chartLine"
+          points="15,212 60,195 85,205 120,182 145,192 185,158 210,170 250,128 275,142 305,88 318,38"
           stroke="url(#lineGrad)"
           stroke-width="4"
           stroke-linecap="round"
           stroke-linejoin="round"
           fill="none"
-          stroke-dasharray="600"
-          stroke-dashoffset="600"/>
+          filter="url(#lineGlow)"
+          clip-path="url(#lineReveal)"/>
 
-    <!-- Arrowhead — BIGGER, always visible, at the tip -->
-    <polygon id="arrowHead"
-             points="272,0  248,28  296,28"
-             fill="#8b5cf6"
-             filter="url(#arrowGlow)"
-             opacity="1"/>
-
-    <!-- Glow rings around arrowhead tip -->
-    <circle cx="272" cy="22" r="8"  fill="#8b5cf6" filter="url(#arrowGlow)" opacity="0" id="glowDot"/>
-    <circle cx="272" cy="22" r="14" fill="rgba(139,92,246,0.25)" opacity="0" id="glowRing1"/>
-    <circle cx="272" cy="22" r="22" fill="rgba(139,92,246,0.10)" opacity="0" id="glowRing2"/>
+    <!-- Arrowhead — moves with the line tip via JS -->
+    <g id="movingArrow" filter="url(#arrowGlow)">
+        <!-- The triangle arrowhead, pointing up-right -->
+        <polygon id="arrowHead" points="0,-14 -12,8 12,8" fill="#8b5cf6"/>
+        <!-- Pulse ring -->
+        <circle r="10" fill="rgba(139,92,246,0.3)" id="pulseRing"/>
+        <circle r="16" fill="rgba(139,92,246,0.12)" id="pulseRing2"/>
+    </g>
 </svg>
 
         <!-- Profile Photo (loaded dynamically, fallback shown) -->
@@ -1233,7 +1219,119 @@
             });
         }, 400);
     }
+function animateHero() {
+    setTimeout(() => {
+        document.getElementById('heroPhotoWrap')?.classList.add('animate');
+        document.getElementById('testimonialCard')?.classList.add('animate');
+        document.getElementById('clientsFloat')?.classList.add('animate');
+        ['badge1','badge2','badge3','badge4','badge5'].forEach((id, i) => {
+            setTimeout(() => document.getElementById(id)?.classList.add('animate'), i * 120);
+        });
 
+        // Animate the growth arrow
+        const chart = document.getElementById('growthChart');
+        if (!chart) return;
+        chart.classList.add('animate');
+
+        // The zig-zag points in SVG coordinate space
+        const points = [
+            {x:15,  y:212},
+            {x:60,  y:195},
+            {x:85,  y:205},
+            {x:120, y:182},
+            {x:145, y:192},
+            {x:185, y:158},
+            {x:210, y:170},
+            {x:250, y:128},
+            {x:275, y:142},
+            {x:305, y:88 },
+            {x:318, y:38 }
+        ];
+
+        const totalDuration = 2000; // 2 seconds
+        const revealRect = document.getElementById('revealRect');
+        const movingArrow = document.getElementById('movingArrow');
+        const arrowHead = document.getElementById('arrowHead');
+        const chartArea = document.getElementById('chartArea');
+        const totalWidth = 318 - 15; // x range of the path
+
+        // Place arrowhead at start immediately
+        function positionArrow(x, y, angle) {
+            movingArrow.setAttribute('transform',
+                `translate(${x},${y}) rotate(${angle})`
+            );
+        }
+
+        // Calculate angle between two points
+        function getAngle(x1, y1, x2, y2) {
+            return Math.atan2(x2 - y2, x2 - x1) * (180 / Math.PI) - 90;
+            // simpler: angle in degrees pointing from p1 to p2
+        }
+        function angleBetween(x1, y1, x2, y2) {
+            const rad = Math.atan2(y2 - y1, x2 - x1);
+            return (rad * 180 / Math.PI) + 90; // +90 because our arrow points "up" by default
+        }
+
+        // Set initial position at first point
+        positionArrow(points[0].x, points[0].y,
+            angleBetween(points[0].x, points[0].y, points[1].x, points[1].y));
+
+        const startTime = performance.now() + 300; // small delay after chart fades in
+
+        function animate(now) {
+            const elapsed = Math.max(0, now - startTime);
+            const progress = Math.min(elapsed / totalDuration, 1); // 0 → 1
+
+            // Reveal rect sweeps from x=0 to x=330
+            const revealX = 15 + totalWidth * progress;
+            revealRect.setAttribute('width', revealX + 20);
+
+            // Find current position along the polyline
+            // Calculate total path length across segments
+            let totalLen = 0;
+            const segLens = [];
+            for (let i = 1; i < points.length; i++) {
+                const dx = points[i].x - points[i-1].x;
+                const dy = points[i].y - points[i-1].y;
+                const len = Math.sqrt(dx*dx + dy*dy);
+                segLens.push(len);
+                totalLen += len;
+            }
+
+            const targetLen = progress * totalLen;
+            let accumulated = 0;
+            let curX = points[0].x, curY = points[0].y;
+            let angle = angleBetween(points[0].x, points[0].y, points[1].x, points[1].y);
+
+            for (let i = 0; i < segLens.length; i++) {
+                if (accumulated + segLens[i] >= targetLen) {
+                    const t = (targetLen - accumulated) / segLens[i];
+                    curX = points[i].x + t * (points[i+1].x - points[i].x);
+                    curY = points[i].y + t * (points[i+1].y - points[i].y);
+                    angle = angleBetween(points[i].x, points[i].y, points[i+1].x, points[i+1].y);
+                    break;
+                }
+                accumulated += segLens[i];
+            }
+
+            positionArrow(curX, curY, angle);
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                // Snap to final point
+                positionArrow(points[points.length-1].x, points[points.length-1].y,
+                    angleBetween(points[points.length-2].x, points[points.length-2].y,
+                                 points[points.length-1].x, points[points.length-1].y));
+                // Fade in area fill
+                setTimeout(() => { chartArea.style.opacity = '1'; }, 100);
+            }
+        }
+
+        requestAnimationFrame(animate);
+
+    }, 400);
+}
     /* ── SMOOTH SCROLL ───────────────────────────── */
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
