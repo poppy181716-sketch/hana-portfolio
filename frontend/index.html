@@ -1356,6 +1356,22 @@ function animateHero() {
 <script>
 const API_URL = 'https://hana-portfolio-backend-ife6.onrender.com';
 
+/* ── HERO ANIMATES IMMEDIATELY — never waits for API ──────────
+   The arrow, photo, badges etc. fire right away so the user sees
+   a smooth animation even if the backend is slow or sleeping.   */
+window.addEventListener('DOMContentLoaded', () => {
+    // Remove loading overlay immediately
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity 0.25s ease';
+        setTimeout(() => overlay.remove(), 280);
+    }
+    // Kick off hero animation right away
+    animateHero();
+});
+
+/* ── API DATA LOADS IN BACKGROUND — fills in content as it arrives */
 async function loadSiteData() {
     try {
         const profile = await fetch(API_URL + '/api/profile').then(r => r.json());
@@ -1390,18 +1406,8 @@ async function loadSiteData() {
         await buildVideoCards('short');
         await buildVideoCards('long');
 
-        animateHero();
-
     } catch (error) {
         console.error('Error loading data:', error);
-        animateHero();
-    } finally {
-        const overlay = document.getElementById('loadingOverlay');
-        if (overlay) {
-            overlay.style.opacity = '0';
-            overlay.style.transition = 'opacity 0.3s ease';
-            setTimeout(() => overlay.remove(), 320);
-        }
     }
 }
 
@@ -1457,6 +1463,7 @@ function generateVideoThumbnail(videoUrl, cardElement) {
     video.addEventListener('error', () => { cardElement.style.backgroundColor = 'var(--card-bg)'; });
 }
 
+/* Fire API loading in the background — doesn't block or delay the hero animation */
 loadSiteData();
 </script>
 </body>
