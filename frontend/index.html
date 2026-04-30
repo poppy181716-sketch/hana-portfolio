@@ -35,7 +35,7 @@
         [data-theme="light"] #animatedBg{background:radial-gradient(ellipse at 20% 10%,rgba(124,58,237,.06) 0%,transparent 55%),radial-gradient(ellipse at 80% 90%,rgba(236,72,153,.04) 0%,transparent 55%),#f3f0ff}
 
         /* NAV */
-        nav{position:fixed;top:0;width:100%;background:var(--glass-bg);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);padding:1.1rem 5%;display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid var(--border-subtle);transform:translateY(-100%);transition:transform .4s cubic-bezier(.165,.84,.44,1),background .45s ease;box-shadow:var(--nav-shadow)}
+        nav{position:fixed;top:0;width:100%;background:var(--glass-bg);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);padding:1.1rem 5%;display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid var(--border-subtle);transform:translateY(-100%);transition:transform .4s cubic-bezier(.165,.84,.44,1),background .45s ease;box-shadow:var(--nav-shadow);will-change:transform}
         nav.visible{transform:translateY(0)}
         .nav-profile{display:flex;align-items:center;gap:12px}
         .nav-profile img{width:40px;height:40px;border-radius:50%;border:2px solid var(--primary-glow);object-fit:cover;transition:transform .3s ease}
@@ -203,6 +203,8 @@
 
         /* RESPONSIVE */
         @media(max-width:768px){
+            #home::after{animation:none}
+            nav{will-change:transform}
             nav{padding:1rem 5%}
             .menu-toggle{display:flex}
             .nav-links{position:fixed;top:0;right:-100%;width:70%;height:100vh;background:var(--glass-bg);backdrop-filter:blur(20px);flex-direction:column;padding:100px 30px;gap:2rem;transition:right .4s ease;border-left:1px solid var(--border-subtle)}
@@ -485,19 +487,27 @@ themeBtn.addEventListener('click', () => {
     setTimeout(() => { themeBtn.style.transform = ''; }, 220);
 });
 
-/* NAV */
+/* NAV — single throttled scroll listener */
 const navbar = document.getElementById('navbar');
 const menuToggle = document.getElementById('menuToggle');
 const navLinks = document.getElementById('navLinks');
-window.addEventListener('scroll', () => navbar.classList.toggle('visible', window.scrollY > 60));
+const sections = document.querySelectorAll('section[id]');
+let ticking = false;
 menuToggle.addEventListener('click', () => { menuToggle.classList.toggle('active'); navLinks.classList.toggle('active'); });
 document.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', () => { menuToggle.classList.remove('active'); navLinks.classList.remove('active'); }));
-const sections = document.querySelectorAll('section[id]');
 window.addEventListener('scroll', () => {
-    sections.forEach(section => {
-        if (window.scrollY > section.offsetTop - 100 && window.scrollY <= section.offsetTop - 100 + section.offsetHeight)
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#' + section.id));
-    });
+    if (!ticking) {
+        requestAnimationFrame(() => {
+            const scrollY = window.scrollY;
+            navbar.classList.toggle('visible', scrollY > 60);
+            sections.forEach(section => {
+                if (scrollY > section.offsetTop - 100 && scrollY <= section.offsetTop - 100 + section.offsetHeight)
+                    document.querySelectorAll('.nav-link').forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#' + section.id));
+            });
+            ticking = false;
+        });
+        ticking = true;
+    }
 });
 
 /* TABS */
@@ -674,7 +684,12 @@ function animateHero() {
 const API_URL = 'https://hana-portfolio-backend-ife6.onrender.com';
 async function loadSiteData() {
     try {
-        const profile = await fetch(API_URL + '/api/profile').then(r => r.json());
+        // FIX: Run all fetches in parallel instead of sequential waterfalling
+        const [profile, showreel] = await Promise.all([
+            fetch(API_URL + '/api/profile').then(r => r.json()),
+            fetch(API_URL + '/api/showreel').then(r => r.json()),
+        ]);
+
         if (profile.profile_picture_url) {
             document.querySelectorAll('#navProfileImg').forEach(img => { img.src = profile.profile_picture_url; });
             const heroImg = document.getElementById('heroProfileImg');
@@ -691,12 +706,14 @@ async function loadSiteData() {
             const contactBtn = document.getElementById('contactEmailBtn');
             if (contactBtn) contactBtn.href = emailHref;
         }
-        const showreel = await fetch(API_URL + '/api/showreel').then(r => r.json());
+
+        // FIX: preload="none" so the showreel doesn't download on page load
         if (showreel.video_url) {
-            document.querySelector('.showreel-wrapper').innerHTML = `<video autoplay muted loop controls playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover"><source src="${showreel.video_url}" type="video/mp4"></video>`;
+            document.querySelector('.showreel-wrapper').innerHTML = `<video preload="none" muted loop controls playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover" onclick="this.play()"><source src="${showreel.video_url}" type="video/mp4"></video>`;
         }
-        await buildVideoCards('short');
-        await buildVideoCards('long');
+
+        // FIX: Build both video carousels in parallel
+        await Promise.all([buildVideoCards('short'), buildVideoCards('long')]);
         animateHero();
     } catch (error) {
         console.error('Error loading data:', error);
@@ -721,26 +738,15 @@ async function buildVideoCards(type) {
             if (v.thumbnail_url) {
                 card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.15),rgba(0,0,0,0.15)),url('${v.thumbnail_url}')`;
                 card.style.backgroundSize = 'cover'; card.style.backgroundPosition = 'center';
-            } else if (v.video_url) { generateVideoThumbnail(v.video_url, card); }
+            } else {
+                // FIX: No thumbnail? Use solid color — never load a full video just for a frame
+                card.style.backgroundColor = 'var(--card-bg)';
+            }
             card.innerHTML = `<span class="card-format-tag ${type==='short'?'tag-shortform':'tag-longform'}">${v.format_tag||''}</span><span class="card-duration">${v.duration_label||''}</span><i class="fas fa-play play-icon"></i><div class="card-overlay"><h3>${v.title}</h3><p>${v.subtitle||''}</p></div>`;
             track.appendChild(card);
         });
         initFlatCarousel(type === 'short' ? 'shortform' : 'longform');
     } catch (error) { console.error(`Error loading ${type} videos:`, error); }
-}
-function generateVideoThumbnail(videoUrl, cardElement) {
-    const video = document.createElement('video');
-    video.src = videoUrl; video.crossOrigin = 'anonymous'; video.muted = true; video.playsInline = true; video.currentTime = 1;
-    video.addEventListener('loadeddata', function() {
-        try {
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-            cardElement.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.15),rgba(0,0,0,0.15)),url('${canvas.toDataURL('image/jpeg',0.8)}')`;
-            cardElement.style.backgroundSize = 'cover';
-        } catch { cardElement.style.backgroundColor = 'var(--card-bg)'; }
-    });
-    video.addEventListener('error', () => { cardElement.style.backgroundColor = 'var(--card-bg)'; });
 }
 loadSiteData();
 </script>
