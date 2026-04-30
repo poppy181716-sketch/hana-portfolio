@@ -41,11 +41,14 @@
         .menu-toggle.active span:nth-child(3){transform:rotate(-45deg) translate(7px,-6px)}
 
         /* HERO */
-        #home{position:relative;overflow:hidden;min-height:100vh;height:100vh;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;text-align:center;padding:90px 2rem 0;background:linear-gradient(160deg,#1a0b35 0%,#2d1060 30%,#3b0d8a 55%,#6d1fb5 80%,#7c1fd4 100%)}
+        #home{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:100px 2rem 60px;background:linear-gradient(160deg,#1a0b35 0%,#2d1060 30%,#3b0d8a 55%,#6d1fb5 80%,#7c1fd4 100%)}
         #home::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(139,92,246,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,.08) 1px,transparent 1px);background-size:50px 50px;z-index:0}
         #home::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;height:900px;background:radial-gradient(circle,rgba(124,58,237,.3) 0%,transparent 65%);filter:blur(80px);z-index:0;animation:floatGlow 8s ease-in-out infinite}
         /* Fade bottom of hero into portfolio section */
-        #home .hero-bottom-fade{position:absolute;bottom:0;left:0;width:100%;height:160px;background:linear-gradient(to bottom,transparent 0%,#0d0a1a 100%);z-index:3;pointer-events:none}
+        #home .hero-bottom-fade{position:absolute;bottom:0;left:0;width:100%;height:120px;background:linear-gradient(to bottom,transparent 0%,#0d0a1a 100%);z-index:3;pointer-events:none}
+
+        /* Bridge section between hero and portfolio */
+        .hero-bridge{background:#0d0a1a;display:flex;flex-direction:column;align-items:center;padding:60px 2rem 0;position:relative;z-index:1}
         #home>*{position:relative;z-index:2}
 
         .hero-headline-wrap{z-index:2;position:relative;margin-bottom:1rem;opacity:0;transform:translateY(20px);transition:all .9s cubic-bezier(.165,.84,.44,1)}
@@ -54,7 +57,7 @@
         .hero-content h1 .gradient-word{background:linear-gradient(135deg,#c084fc 0%,#ec4899 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
         .hero-content h2{font-size:clamp(.82rem,2vw,.95rem);color:rgba(255,255,255,.55);letter-spacing:5px;text-transform:uppercase;font-weight:400;margin-bottom:0;font-family:'DM Sans',sans-serif}
 
-        .hero-stage{position:relative;width:100%;max-width:900px;flex:1;min-height:300px;margin:0 auto;z-index:2}
+        .hero-stage{position:relative;width:100%;max-width:900px;height:480px;margin:0 auto 2rem;z-index:2}
 
         .hero-photo-wrap{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:320px;height:420px;z-index:3;opacity:0;transform:translateX(-50%) translateY(30px);transition:all 1s cubic-bezier(.165,.84,.44,1) .3s}
         .hero-photo-wrap.animate{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -76,19 +79,19 @@
         .badge-sub{font-size:.62rem;opacity:.55;font-weight:400;line-height:1;margin-top:2px;display:block}
 
         /* CTA + SOCIAL */
-        .hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.2rem;opacity:0;transform:translateY(20px);transition:all .9s cubic-bezier(.165,.84,.44,1) .55s;z-index:2;position:relative}
+        .hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2rem;opacity:0;transform:translateY(20px);transition:all .9s cubic-bezier(.165,.84,.44,1) .55s;z-index:2;position:relative}
         .hero-cta.animate{opacity:1;transform:translateY(0)}
         .btn-primary{padding:14px 36px;border-radius:50px;text-decoration:none;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;font-size:.8rem;transition:all .28s ease;display:inline-flex;align-items:center;gap:10px;background:white;color:#1a0f3d;box-shadow:0 4px 24px rgba(255,255,255,.2)}
         .btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(255,255,255,.3)}
         .btn-secondary{padding:14px 36px;border-radius:50px;text-decoration:none;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;font-size:.8rem;transition:all .28s ease;display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
         .btn-secondary:hover{background:rgba(255,255,255,.15);transform:translateY(-2px)}
-        .social-icons{display:flex;gap:1.6rem;justify-content:center;opacity:0;transition:all .9s ease .7s;z-index:2;position:relative;margin-bottom:1.5rem}
+        .social-icons{display:flex;gap:1.6rem;justify-content:center;opacity:0;transition:all .9s ease .7s;z-index:2;position:relative;padding-bottom:60px}
         .social-icons.animate{opacity:1}
         .social-icons a{font-size:1.6rem;transition:transform .3s ease}
         .social-icons a:hover i{transform:translateY(-4px) scale(1.2)}
 
         /* SHOWREEL */
-        .showreel-container{width:100%;max-width:820px;margin-bottom:1.2rem;border-radius:16px;overflow:hidden;border:1px solid rgba(139,92,246,.2);background:rgba(0,0,0,.3);opacity:0;transform:translateY(24px);transition:opacity .9s ease,transform .9s ease,box-shadow .35s ease;position:relative;z-index:2}
+        .showreel-container{width:100%;max-width:820px;margin-bottom:2.5rem;border-radius:16px;overflow:hidden;border:1px solid rgba(139,92,246,.2);background:rgba(0,0,0,.3);opacity:0;transform:translateY(24px);transition:opacity .9s ease,transform .9s ease,box-shadow .35s ease;position:relative;z-index:2}
         .showreel-container:hover{transform:translateY(-8px);box-shadow:0 20px 60px rgba(124,58,237,.4)}
         .showreel-container.animate{opacity:1;transform:translateY(0)}
         .showreel-wrapper{position:relative;padding-bottom:56.25%;height:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:var(--text-dim)}
@@ -197,7 +200,7 @@
             .nav-links{position:fixed;top:0;right:-100%;width:70%;height:100vh;background:var(--glass-bg);backdrop-filter:blur(20px);flex-direction:column;padding:100px 30px;gap:2rem;transition:right .4s ease;border-left:1px solid var(--border-subtle)}
             .nav-links.active{right:0}
             .nav-links a{font-size:1.05rem}
-            .hero-stage{min-height:280px}
+            .hero-stage{height:360px}
             .hero-photo-wrap{width:240px;height:320px}
             .hero-photo,.hero-photo-placeholder{width:210px;height:310px}
             .badge-davinci{top:25px;left:8px;padding:7px 10px}
@@ -214,7 +217,7 @@
             .format-tab{padding:11px 20px;font-size:.73rem}
         }
         @media(max-width:480px){
-            .hero-stage{min-height:220px}
+            .hero-stage{height:300px}
             .hero-photo-wrap{width:200px;height:280px}
             .hero-photo,.hero-photo-placeholder{width:180px;height:270px}
             .video-card{flex:0 0 260px;height:165px}
@@ -352,6 +355,10 @@
     </div><!-- end hero-stage -->
     <div class="hero-bottom-fade"></div>
 
+</section>
+
+<!-- Showreel + CTA bridge between hero and portfolio -->
+<div class="hero-bridge">
     <div class="showreel-container" id="showreelContainer">
         <div class="showreel-label"><i class="fas fa-play-circle"></i> SHOWREEL</div>
         <div class="showreel-wrapper">
@@ -370,7 +377,7 @@
         <a href="#" id="twitterLink"   target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
         <a href="#" id="emailLink"     target="_blank" rel="noopener noreferrer" aria-label="Email"><i class="fas fa-envelope"></i></a>
     </div>
-</section>
+</div>
 
 <section id="mywork">
     <h2 class="section-title" id="workTitle">Showreel &amp; Projects</h2>
