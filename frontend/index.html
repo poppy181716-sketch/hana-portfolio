@@ -59,7 +59,7 @@
         .hero-content h2{font-size:clamp(.75rem,1.8vw,.9rem);color:rgba(255,255,255,.55);letter-spacing:5px;text-transform:uppercase;font-weight:400;margin-bottom:0;font-family:'DM Sans',sans-serif}
 
         /* Stage fills ALL remaining space — profile picture goes to the very bottom */
-        .hero-stage{position:relative;width:100%;max-width:900px;flex:1;min-height:0;margin:0 auto;z-index:2}
+        .hero-stage{position:relative;width:100%;max-width:900px;flex:1;min-height:320px;margin:0 auto;z-index:2}
 
         .hero-photo-wrap{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:320px;height:420px;z-index:3;opacity:0;transform:translateX(-50%) translateY(30px);transition:all 1s cubic-bezier(.165,.84,.44,1) .3s;will-change:transform,opacity}
         .hero-photo-wrap.animate{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -96,7 +96,7 @@
         .showreel-container{width:100%;max-width:820px;margin-bottom:2.5rem;border-radius:16px;overflow:hidden;border:1px solid rgba(139,92,246,.2);background:rgba(0,0,0,.3);opacity:0;transform:translateY(24px);transition:opacity .9s ease,transform .9s ease,box-shadow .35s ease;position:relative;z-index:2}
         .showreel-container:hover{transform:translateY(-8px);box-shadow:0 20px 60px rgba(124,58,237,.4)}
         .showreel-container.animate{opacity:1;transform:translateY(0)}
-        .showreel-wrapper{position:relative;padding-bottom:56.25%;height:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:var(--text-dim)}
+        .showreel-wrapper{position:relative;padding-bottom:56.25%;height:0;background:rgba(0,0,0,.4);overflow:hidden}
         .showreel-label{position:absolute;top:14px;left:14px;background:rgba(124,58,237,.95);padding:5px 14px;border-radius:50px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;z-index:10;display:flex;align-items:center;gap:7px;color:#fff}
 
         /* PORTFOLIO */
@@ -196,20 +196,33 @@
 
         /* RESPONSIVE */
         @media(max-width:768px){
-            .growth-chart{display:none!important}
-            #home::after{display:none}
+            /* Nav */
             nav{padding:1rem 5%}
             .menu-toggle{display:flex}
             .nav-links{position:fixed;top:0;right:-100%;width:70%;height:100vh;background:var(--glass-bg);backdrop-filter:blur(20px);flex-direction:column;padding:100px 30px;gap:2rem;transition:right .4s ease;border-left:1px solid var(--border-subtle)}
             .nav-links.active{right:0}
             .nav-links a{font-size:1.05rem}
-            .hero-photo-wrap{width:240px;height:320px}
-            .hero-photo,.hero-photo-placeholder{width:210px;height:310px}
-            .badge-davinci{top:25px;left:8px;padding:7px 10px}
-            .badge-premiere{top:25px;right:8px;padding:7px 10px}
-            .badge-capcut{bottom:45px;left:8px;padding:7px 10px}
-            .badge-name{font-size:.7rem}
-            .badge-sub{font-size:.57rem}
+
+            /* Hero — redesigned for mobile: stack vertically, no absolute badges */
+            #home{height:auto;min-height:100svh;padding-bottom:0}
+            .hero-stage{flex:none;width:100%;position:relative;min-height:340px}
+
+            /* Arrow: smaller, contained, visible on mobile */
+            .growth-chart{display:block!important;overflow:hidden}
+
+            /* Profile photo — smaller */
+            .hero-photo-wrap{width:180px;height:240px}
+            .hero-photo,.hero-photo-placeholder{width:160px;height:230px}
+
+            /* Badges — repositioned so they don't overlap photo on small screens */
+            .sw-badge{padding:6px 10px;gap:7px;border-radius:10px}
+            .badge-davinci{top:8px;left:4px;right:auto}
+            .badge-premiere{top:8px;right:4px;left:auto}
+            .badge-capcut{bottom:50px;left:4px;right:auto}
+            .badge-name{font-size:.67rem}
+            .badge-sub{font-size:.54rem}
+
+            /* Portfolio */
             .flat-carousel-container{padding:0 50px}
             .video-card{flex:0 0 300px;height:190px}
             .video-card.short-form-card{flex:0 0 180px;height:320px}
@@ -219,8 +232,16 @@
             .format-tab{padding:11px 20px;font-size:.73rem}
         }
         @media(max-width:480px){
-            .hero-photo-wrap{width:200px;height:280px}
-            .hero-photo,.hero-photo-placeholder{width:180px;height:270px}
+            /* Even smaller phones */
+            .hero-stage{min-height:280px}
+            .hero-photo-wrap{width:150px;height:200px}
+            .hero-photo,.hero-photo-placeholder{width:135px;height:190px}
+
+            /* Badges get very compact — show text only on hover or just icon+name */
+            .badge-sub{display:none}
+            .sw-badge{padding:5px 8px;gap:5px}
+            .badge-name{font-size:.63rem}
+
             .video-card{flex:0 0 260px;height:165px}
             .video-card.short-form-card{flex:0 0 165px;height:295px}
             .stats-grid{grid-template-columns:1fr}
@@ -266,7 +287,7 @@
 
         <!-- GROWTH ARROW SVG — no pulse rings, just the triangle tip -->
         <svg class="growth-chart" id="growthChart"
-             viewBox="0 0 900 480" preserveAspectRatio="none"
+             viewBox="0 0 900 480" preserveAspectRatio="xMidYMid meet"
              fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id="lineGrad" gradientUnits="userSpaceOnUse" x1="0" y1="480" x2="900" y2="0">
@@ -295,7 +316,7 @@
                   fill="url(#chartGrad)" opacity="0" style="transition:opacity .9s ease;"/>
             <polyline id="chartLine"
                       points="0,390 180,290 230,320 410,195 460,225 640,115 690,148 870,40"
-                      stroke="url(#lineGrad)" stroke-width="3.5"
+                      stroke="url(#lineGrad)" stroke-width="4"
                       stroke-linecap="round" stroke-linejoin="round"
                       fill="none" filter="url(#lineGlow)" clip-path="url(#lineReveal)"/>
             <!-- Arrow tip: just the triangle, no rings -->
@@ -687,7 +708,13 @@ async function loadSiteData() {
         if (showreel.video_url) {
             const wrapper = document.querySelector('.showreel-wrapper');
             wrapper.style.cssText += 'position:relative;padding-bottom:56.25%;height:0;';
-            wrapper.innerHTML = '<video muted loop controls playsinline preload="none" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover"><source src="' + showreel.video_url + '" type="video/mp4"></video>';
+            // autoplay needs: muted + playsinline + autoplay attrs. preload="auto" so it starts buffering.
+            wrapper.innerHTML = '<video muted loop autoplay playsinline preload="auto" controls style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover"><source src="' + showreel.video_url + '" type="video/mp4"></video>';
+            // Belt-and-suspenders: call play() after a tick in case autoplay attr isn't enough
+            const vid = wrapper.querySelector('video');
+            if (vid) {
+                vid.addEventListener('canplay', () => { vid.play().catch(() => {}); }, { once: true });
+            }
         }
 
         await Promise.all([buildVideoCards('short'), buildVideoCards('long')]);
