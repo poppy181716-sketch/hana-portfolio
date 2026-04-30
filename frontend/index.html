@@ -16,7 +16,7 @@
         h1,h2,h3{font-family:'Syne',sans-serif}
         @keyframes spin{to{transform:rotate(360deg)}}
         @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-        @keyframes floatGlow{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-47%,-53%) scale(1.08)}}
+        /* floatGlow removed — was animating filter:blur causing scroll jank */
 
         /* ANIMATED BG */
         #animatedBg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1}
@@ -41,9 +41,10 @@
         .menu-toggle.active span:nth-child(3){transform:rotate(-45deg) translate(7px,-6px)}
 
         /* HERO */
-        #home{position:relative;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;text-align:center;padding:0 2rem;background:linear-gradient(160deg,#1a0b35 0%,#2d1060 30%,#3b0d8a 55%,#6d1fb5 80%,#7c1fd4 100%);overflow:clip}
-        #home::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(139,92,246,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,.08) 1px,transparent 1px);background-size:50px 50px;z-index:0;pointer-events:none}
-        #home::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;height:900px;background:radial-gradient(circle,rgba(124,58,237,.3) 0%,transparent 65%);filter:blur(80px);z-index:0;animation:floatGlow 8s ease-in-out infinite;pointer-events:none}
+        #home{position:relative;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;text-align:center;padding:0 2rem;background:linear-gradient(160deg,#1a0b35 0%,#2d1060 30%,#3b0d8a 55%,#6d1fb5 80%,#7c1fd4 100%);overflow:clip;contain:layout style}
+        #home::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(139,92,246,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,.06) 1px,transparent 1px);background-size:60px 60px;z-index:0;pointer-events:none}
+        /* Removed filter:blur + animation — was causing full repaint every frame during scroll */
+        #home::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(124,58,237,.22) 0%,transparent 68%);z-index:0;pointer-events:none}
         #home .hero-bottom-fade{position:absolute;bottom:0;left:0;width:100%;height:140px;background:linear-gradient(to bottom,transparent 0%,#0d0a1a 100%);z-index:3;pointer-events:none}
         #home>*{position:relative;z-index:2}
         .hero-nav-spacer{height:80px;width:100%;flex-shrink:0}
@@ -60,14 +61,14 @@
         /* Stage fills ALL remaining space — profile picture goes to the very bottom */
         .hero-stage{position:relative;width:100%;max-width:900px;flex:1;min-height:0;margin:0 auto;z-index:2}
 
-        .hero-photo-wrap{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:320px;height:420px;z-index:3;opacity:0;transform:translateX(-50%) translateY(30px);transition:all 1s cubic-bezier(.165,.84,.44,1) .3s}
+        .hero-photo-wrap{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:320px;height:420px;z-index:3;opacity:0;transform:translateX(-50%) translateY(30px);transition:all 1s cubic-bezier(.165,.84,.44,1) .3s;will-change:transform,opacity}
         .hero-photo-wrap.animate{opacity:1;transform:translateX(-50%) translateY(0)}
         .hero-photo-bg{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:280px;height:380px;background:linear-gradient(180deg,rgba(124,58,237,.4) 0%,rgba(236,72,153,.3) 100%);border-radius:140px 140px 0 0;filter:blur(20px)}
         .hero-photo{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:280px;height:400px;object-fit:cover;object-position:top center;border-radius:140px 140px 0 0;filter:saturate(.7) brightness(.85) contrast(1.1);mix-blend-mode:luminosity}
         .hero-photo-placeholder{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:280px;height:400px;border-radius:140px 140px 0 0;background:linear-gradient(180deg,rgba(139,92,246,.3) 0%,rgba(109,21,169,.5) 100%);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);font-size:5rem}
 
         /* GROWTH ARROW */
-        .growth-chart{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;opacity:0;transition:opacity .3s ease;overflow:visible;pointer-events:none}
+        .growth-chart{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;opacity:0;transition:opacity .3s ease;overflow:hidden;pointer-events:none}
         .growth-chart.animate{opacity:1}
 
         /* SOFTWARE BADGES */
@@ -119,8 +120,8 @@
         .carousel-panel.active{display:flex}
         .flat-carousel-container{width:100%;max-width:1200px;margin:0 auto;position:relative;padding:0 80px}
         .flat-carousel-track-wrap{overflow:hidden;border-radius:12px}
-        .flat-carousel-track{display:flex;gap:20px;transition:transform .55s cubic-bezier(.165,.84,.44,1);will-change:transform}
-        .video-card{flex:0 0 400px;height:250px;background:var(--card-bg);border-radius:12px;cursor:pointer;overflow:hidden;border:1px solid var(--border-subtle);position:relative;background-size:cover;background-position:center;transition:border-color .3s ease,transform .3s ease,box-shadow .3s ease;box-shadow:var(--shadow-card)}
+        .flat-carousel-track{display:flex;gap:20px;transition:transform .55s cubic-bezier(.165,.84,.44,1);will-change:transform;transform:translateZ(0)}
+        .video-card{flex:0 0 400px;height:250px;background:var(--card-bg);border-radius:12px;cursor:pointer;overflow:hidden;border:1px solid var(--border-subtle);position:relative;background-size:cover;background-position:center;transition:border-color .3s ease,transform .3s ease,box-shadow .3s ease;box-shadow:var(--shadow-card);contain:layout style;transform:translateZ(0)}
         .video-card:hover{border-color:var(--primary-glow);transform:translateY(-5px);box-shadow:var(--shadow-hover)}
         .video-card.short-form-card{flex:0 0 220px;height:390px}
         .card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.18) 55%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:20px;opacity:0;transition:opacity .35s ease}
@@ -195,7 +196,8 @@
 
         /* RESPONSIVE */
         @media(max-width:768px){
-            #home::after{animation:none}
+            .growth-chart{display:none!important}
+            #home::after{display:none}
             nav{padding:1rem 5%}
             .menu-toggle{display:flex}
             .nav-links{position:fixed;top:0;right:-100%;width:70%;height:100vh;background:var(--glass-bg);backdrop-filter:blur(20px);flex-direction:column;padding:100px 30px;gap:2rem;transition:right .4s ease;border-left:1px solid var(--border-subtle)}
@@ -313,18 +315,12 @@
 
         <!-- DaVinci Resolve badge — top left -->
         <div class="sw-badge badge-davinci" id="badge1">
-            <!-- Real DaVinci Resolve logo -->
             <svg width="32" height="32" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect width="200" height="200" rx="36" fill="#141414"/>
-                <!-- Outer ring -->
                 <circle cx="100" cy="100" r="74" fill="none" stroke="#E8E8E8" stroke-width="10"/>
-                <!-- Inner solid circle -->
                 <circle cx="100" cy="100" r="42" fill="#E8E8E8"/>
-                <!-- Top dot — Cyan/Color node -->
                 <circle cx="100" cy="18" r="16" fill="#00BFFF"/>
-                <!-- Bottom-left dot — Red node -->
                 <circle cx="36" cy="150" r="16" fill="#FF4444"/>
-                <!-- Bottom-right dot — Yellow node -->
                 <circle cx="164" cy="150" r="16" fill="#FFD700"/>
             </svg>
             <div>
@@ -335,7 +331,6 @@
 
         <!-- Premiere Pro badge — top right -->
         <div class="sw-badge badge-premiere" id="badge2">
-            <!-- Real Adobe Premiere Pro logo -->
             <svg width="32" height="32" viewBox="0 0 240 234" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 0h240v234H0z" fill="#2B0066"/>
                 <path d="M56 179V56h42c8.4 0 15.9 1.7 22.4 5.2 6.6 3.5 11.7 8.4 15.3 14.7 3.7 6.3 5.5 13.5 5.5 21.6 0 8.2-1.9 15.4-5.6 21.7-3.7 6.2-8.9 11-15.6 14.4-6.7 3.4-14.4 5.1-23.2 5.1H79v40.3H56zm23-58.7h17.8c7.2 0 12.7-1.9 16.5-5.7 3.9-3.8 5.8-9 5.8-15.6 0-6.7-1.9-11.9-5.7-15.7-3.8-3.8-9.3-5.7-16.6-5.7H79v42.7z" fill="#E0A0FF"/>
@@ -348,16 +343,11 @@
 
         <!-- CapCut badge — bottom left -->
         <div class="sw-badge badge-capcut" id="badge3">
-            <!-- Real CapCut logo -->
             <svg width="32" height="32" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                 <rect width="200" height="200" rx="40" fill="#000"/>
-                <!-- Left bar -->
                 <rect x="38" y="50" width="34" height="100" rx="17" fill="white"/>
-                <!-- Right bar -->
                 <rect x="128" y="50" width="34" height="100" rx="17" fill="white"/>
-                <!-- Connecting arc top -->
                 <path d="M72 68 Q100 40 128 68" stroke="white" stroke-width="16" fill="none" stroke-linecap="round"/>
-                <!-- Connecting arc bottom -->
                 <path d="M72 132 Q100 160 128 132" stroke="white" stroke-width="16" fill="none" stroke-linecap="round"/>
             </svg>
             <div>
@@ -669,9 +659,9 @@ function animateHero() {
 
 <script>
 const API_URL = 'https://hana-portfolio-backend-ife6.onrender.com';
+
 async function loadSiteData() {
     try {
-        // FIX: Run all fetches in parallel instead of sequential waterfalling
         const [profile, showreel] = await Promise.all([
             fetch(API_URL + '/api/profile').then(r => r.json()),
             fetch(API_URL + '/api/showreel').then(r => r.json()),
@@ -685,8 +675,8 @@ async function loadSiteData() {
         }
         if (profile.name) document.getElementById('navName').textContent = profile.name.toUpperCase();
         if (profile.instagram_url) document.getElementById('instagramLink').href = profile.instagram_url;
-        if (profile.twitter_url) document.getElementById('twitterLink').href = profile.twitter_url;
-        if (profile.telegram_url) document.getElementById('telegramLink').href = profile.telegram_url;
+        if (profile.twitter_url)   document.getElementById('twitterLink').href   = profile.twitter_url;
+        if (profile.telegram_url)  document.getElementById('telegramLink').href  = profile.telegram_url;
         if (profile.email) {
             const emailHref = profile.email.startsWith('http') ? profile.email : 'mailto:' + profile.email;
             document.getElementById('emailLink').href = emailHref;
@@ -694,12 +684,12 @@ async function loadSiteData() {
             if (contactBtn) contactBtn.href = emailHref;
         }
 
-        // FIX: preload="none" so the showreel doesn't download on page load
         if (showreel.video_url) {
-            document.querySelector('.showreel-wrapper').innerHTML = `<video preload="none" muted loop controls playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover" onclick="this.play()"><source src="${showreel.video_url}" type="video/mp4"></video>`;
+            const wrapper = document.querySelector('.showreel-wrapper');
+            wrapper.style.cssText += 'position:relative;padding-bottom:56.25%;height:0;';
+            wrapper.innerHTML = '<video muted loop controls playsinline preload="none" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover"><source src="' + showreel.video_url + '" type="video/mp4"></video>';
         }
 
-        // FIX: Build both video carousels in parallel
         await Promise.all([buildVideoCards('short'), buildVideoCards('long')]);
         animateHero();
     } catch (error) {
@@ -710,54 +700,47 @@ async function loadSiteData() {
         if (overlay) { overlay.style.opacity = '0'; overlay.style.transition = 'opacity 0.3s ease'; setTimeout(() => overlay.remove(), 320); }
     }
 }
-// Grab a frame from a video URL at a given timestamp and return a data URL
-function captureVideoFrame(videoUrl, seekTime = 1.5) {
+
+/* Grab a video frame at ~10% duration — like YouTube does for auto-thumbnails.
+   Runs async after cards render so it never blocks the carousel init. */
+function captureVideoFrame(videoUrl) {
     return new Promise(resolve => {
         const video = document.createElement('video');
         video.crossOrigin = 'anonymous';
         video.muted = true;
-        video.playsInline = true;
         video.preload = 'metadata';
-        const canvas = document.createElement('canvas');
-        const timeout = setTimeout(() => resolve(null), 8000); // give up after 8s
+        const timeout = setTimeout(() => { video.src = ''; resolve(null); }, 7000);
 
         video.addEventListener('loadedmetadata', () => {
-            // Seek to 10% into the video (like YouTube does) or 1.5s, whichever is less
-            video.currentTime = Math.min(seekTime, video.duration * 0.1);
+            video.currentTime = Math.max(0.5, video.duration * 0.1);
         });
-
         video.addEventListener('seeked', () => {
             clearTimeout(timeout);
+            const canvas = document.createElement('canvas');
             canvas.width  = video.videoWidth  || 640;
             canvas.height = video.videoHeight || 360;
             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-            try {
-                resolve(canvas.toDataURL('image/jpeg', 0.8));
-            } catch {
-                resolve(null); // CORS blocked canvas read
-            }
             video.src = '';
+            try { resolve(canvas.toDataURL('image/jpeg', 0.75)); }
+            catch { resolve(null); }
         });
-
         video.addEventListener('error', () => { clearTimeout(timeout); resolve(null); });
         video.src = videoUrl;
     });
 }
 
-function applyCardBackground(card, dataUrl) {
-    card.style.cssText += `background-image:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2)),url('${dataUrl}');background-size:cover;background-position:center;`;
-}
-
 async function buildVideoCards(type) {
     try {
-        const videos = await fetch(API_URL + `/api/videos?type=${type}`).then(r => r.json());
+        const res   = await fetch(API_URL + '/api/videos?type=' + type);
+        const videos = await res.json();
         const trackId = type === 'short' ? 'shortform' : 'longform';
-        const track = document.getElementById('track-' + trackId);
+        const track   = document.getElementById('track-' + trackId);
         if (!Array.isArray(videos) || videos.length === 0) return;
         track.innerHTML = '';
 
-        // Build all cards first so carousel is ready
-        const cardEls = videos.map(v => {
+        const needsCapture = [];
+
+        videos.forEach(v => {
             const card = document.createElement('div');
             card.className = 'video-card' + (type === 'short' ? ' short-form-card' : '');
             const url = (v.video_url || '').trim();
@@ -772,41 +755,44 @@ async function buildVideoCards(type) {
             card.dataset.isFile   = isDirectFile ? 'true' : 'false';
             card.dataset.portrait = v.is_portrait ? 'true' : 'false';
 
-            // --- Thumbnail priority ---
-            // 1. Saved thumbnail_url
+            // Thumbnail priority: saved url → YouTube auto → frame capture
             if (v.thumbnail_url) {
-                card.style.cssText += `background-image:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2)),url('${v.thumbnail_url}');background-size:cover;background-position:center;`;
-            }
-            // 2. YouTube auto-thumbnail
-            else if (!isDirectFile && ytId) {
-                card.style.cssText += `background-image:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2)),url('https://img.youtube.com/vi/${ytId}/mqdefault.jpg');background-size:cover;background-position:center;`;
-            }
-            // 3. Video frame capture (async, fills in after card renders)
-            else if (isDirectFile && url) {
-                card._needsFrameCapture = url;
+                card.style.backgroundImage = 'linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2)),url(' + v.thumbnail_url + ')';
+                card.style.backgroundSize = 'cover';
+                card.style.backgroundPosition = 'center';
+            } else if (!isDirectFile && ytId) {
+                card.style.backgroundImage = 'linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2)),url(https://img.youtube.com/vi/' + ytId + '/mqdefault.jpg)';
+                card.style.backgroundSize = 'cover';
+                card.style.backgroundPosition = 'center';
+            } else if (isDirectFile) {
+                needsCapture.push({ card, url });
             }
 
-            card.innerHTML = `
-                <span class="card-format-tag ${type==='short'?'tag-shortform':'tag-longform'}">${v.format_tag||''}</span>
-                <span class="card-duration">${v.duration_label||''}</span>
-                <i class="fas fa-play play-icon"></i>
-                <div class="card-overlay"><h3>${v.title||''}</h3><p>${v.subtitle||''}</p></div>`;
+            card.innerHTML =
+                '<span class="card-format-tag ' + (type === 'short' ? 'tag-shortform' : 'tag-longform') + '">' + (v.format_tag || '') + '</span>' +
+                '<span class="card-duration">' + (v.duration_label || '') + '</span>' +
+                '<i class="fas fa-play play-icon"></i>' +
+                '<div class="card-overlay"><h3>' + (v.title || '') + '</h3><p>' + (v.subtitle || '') + '</p></div>';
             track.appendChild(card);
-            return card;
         });
 
         initFlatCarousel(trackId);
 
-        // After carousel is ready, capture frames for cards that need it (non-blocking)
-        cardEls.forEach(card => {
-            if (!card._needsFrameCapture) return;
-            captureVideoFrame(card._needsFrameCapture).then(dataUrl => {
-                if (dataUrl) applyCardBackground(card, dataUrl);
-            });
-        });
+        // Frame captures happen after carousel is ready — one at a time to avoid thrashing
+        (async () => {
+            for (const { card, url } of needsCapture) {
+                const dataUrl = await captureVideoFrame(url);
+                if (dataUrl) {
+                    card.style.backgroundImage = 'linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2)),url(' + dataUrl + ')';
+                    card.style.backgroundSize = 'cover';
+                    card.style.backgroundPosition = 'center';
+                }
+            }
+        })();
 
     } catch (err) { console.error('Error loading ' + type + ' videos:', err); }
 }
+
 loadSiteData();
 </script>
 </body>
